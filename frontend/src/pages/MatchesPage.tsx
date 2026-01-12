@@ -1,0 +1,53 @@
+import { useEffect, useState } from "react";
+import type { Match } from "../types/match";
+import MatchCard from "../components/MatchCard";
+import "./MatchesPage.css";
+
+const MatchesPage = () => {
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const response = await fetch("/api/simulate");
+        if (!response.ok) {
+          throw new Error("Failed to fetch matches.");
+        } else {
+          const data = await response.json();
+          setMatches(data.matches);
+        }
+      } catch (e: any) {
+        setError(e.message ?? "Unknown error.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (loading) {
+    return <div>Loading simulation...</div>;
+  } else if (error) {
+    return <div>Error: {error}</div>;
+  } else {
+    return (
+      <div className="matches-page">
+        <h1>Match Predictions</h1>
+
+        <div className="match-header">
+          <div className="header-cell date">Date</div>
+          <div className="header-cell prediction">Prediction</div>
+          <div className="header-cell correct">Correct?</div>
+        </div>
+
+        {matches.map((match) => {
+          return <MatchCard match={match} />;
+        })}
+      </div>
+    );
+  }
+};
+
+export default MatchesPage;

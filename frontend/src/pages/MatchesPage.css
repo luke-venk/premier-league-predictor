@@ -1,0 +1,18 @@
+.matches-page {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.match-header {
+  display: grid;
+  grid-template-columns: 7rem auto 7rem;
+  align-items: center;
+}
+
+.header-cell {
+  font-size: 0.9 rem;
+  font-weight: 700;
+  color: var(--clr-ternary-4);
+  text-transform: uppercase;
+  justify-self: center;
+}

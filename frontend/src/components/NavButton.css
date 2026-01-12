@@ -1,0 +1,21 @@
+.btn {
+  display: inline-block;
+  background: var(--clr-primary-4);
+  color: var(--clr-ternary-1);
+  width: 8.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-size: 17px;
+  transition: all 0.2s linear;
+}
+
+.btn:hover {
+  background: var(--clr-secondary-3);
+  color: var(--clr-primary-1);
+}
+
+.btn-active {
+  background: var(--clr-primary-1);
+  color: white;
+  transform: scale(1.10);
+}
