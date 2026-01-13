@@ -1,23 +1,13 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from typing import Literal
+"""
+Defines HTTP endpoints for the API to use.
 
-app = FastAPI()
+Translates HTTP request to the appropriate sim/ function calls, and
+returns function outputs to HTTP responses.
+"""
+from fastapi import APIRouter
+from api.schemas import SimulateResponse
 
-class Probability(BaseModel):
-  home_win: float = Field(alias="homeWin")
-  draw: float
-  away_win: float = Field(alias="awayWin")
-
-class Match(BaseModel):
-  date: str
-  home_id: str = Field(alias="homeId")
-  away_id: str = Field(alias="awayId")
-  prediction: Literal["home_win", "draw", "away_win"]
-  probabilities: Probability
-  
-class SimulateResponse(BaseModel):
-  matches: list[Match]
+router = APIRouter()
 
 matches = [
   {
@@ -43,7 +33,14 @@ matches = [
   }
 ]
 
-@app.get("/api/simulate", response_model=SimulateResponse)
+# TODO: remove once add functionality for POST, and store in DB
+@router.get("/simulate", response_model=SimulateResponse)
+def simulate():
+  return {
+    "matches": matches
+  }
+  
+@router.post("/simulate", response_model=SimulateResponse)
 def simulate():
   return {
     "matches": matches

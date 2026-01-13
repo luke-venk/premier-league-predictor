@@ -8,6 +8,7 @@ const MatchesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // TODO: replace this all by getting data from database
   useEffect(() => {
     const load = async () => {
       try {
