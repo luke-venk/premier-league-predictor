@@ -1,6 +1,7 @@
-button {
-  background-color: var(--clr-primary-2);
-  border-color: var(--clr-primary-4);
+.btn {
+  background-color: var(--clr-secondary-5);
+  color: white;
+  border-color: var(--clr-primary-5);
   border-width: 4px;
   border-radius: 999px;
   padding: 1rem 2rem;
@@ -10,10 +11,6 @@ button {
   font-family: inherit;
 }
 
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.btn:hover {
+  background-color: var(--clr-secondary-4);
 }

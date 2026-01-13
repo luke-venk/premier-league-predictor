@@ -14,15 +14,18 @@
 
   /* CUSTOM COLORS */
   /* Purple */
-  --clr-primary-1:  rgb(112, 48, 161);
-  --clr-primary-2:  rgb(62, 25, 91);
-  --clr-primary-3: rgb(28, 12, 40);
-  --clr-primary-4: rgb(0, 0, 0);
+  --clr-primary-1:  rgb(149, 66, 213);
+  --clr-primary-2:  rgb(112, 48, 161);
+  --clr-primary-3:  rgb(62, 25, 91);
+  --clr-primary-4: rgb(28, 12, 40);
+  --clr-primary-5: rgb(0, 0, 0);
 
   /* Green */
   --clr-secondary-1: rgb(235, 255, 0);
   --clr-secondary-2: rgb(98, 255, 80);
   --clr-secondary-3: rgb(2, 249, 194);
+  --clr-secondary-4: rgb(0, 152, 119);
+  --clr-secondary-5: rgb(0, 108, 85);
   
   /* White/Gray */
   --clr-ternary-1: rgb(255, 255, 255);
@@ -34,10 +37,13 @@
 a {
   font-weight: 500;
   text-decoration: inherit;
-  color: var(--clr-primary-1);
+  color: var(--clr-primary-3);
 }
-a:hover {
-  color: #646cff;
+
+.resource-list a {
+  font-size: 1.1rem;
+  color: var(--clr-primary-3);
+  text-decoration: none;
 }
 
 body {

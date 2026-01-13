@@ -12,7 +12,7 @@ const NavButton = ({ children, link }: Props) => {
     <NavLink
       to={link}
       end
-      className={({ isActive }) => (isActive ? "btn btn-active" : "btn")}
+      className={({ isActive }) => (isActive ? "navbtn navbtn-active" : "navbtn")}
     >
       {children}
     </NavLink>
