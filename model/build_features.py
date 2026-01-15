@@ -338,6 +338,8 @@ def add_h2h_features(df: pd.DataFrame, n_h2h_matches: int) -> pd.DataFrame:
         'h2h_away_win_pct': []
     }
     
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+
     # For each match, compute H2H statistics
     for idx, row in df.iterrows():
         home_team = row['home_team']

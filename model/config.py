@@ -31,10 +31,8 @@ END_YEAR = 25
 # the 15/16 season.
 NUM_SEASONS = 10
 
-# The acronym of the betting company whose odds we want to use. Some options are:
-# aggregate
-# B365
-SPORTSBOOK = "aggregate"
+# The acronym of the betting company whose odds we want to use.
+SPORTSBOOK = "B365"
 
 # Enable/disable Elo rating features
 USE_ELO = True
