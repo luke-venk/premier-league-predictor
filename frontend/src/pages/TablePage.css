@@ -1,0 +1,37 @@
+.table-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-grid {
+  display: grid;
+  grid-template-columns:
+    3ch /* position */
+    minmax(220px, 1fr) /* team logo + name */
+    repeat(4, 4ch) /* played, won, drew, lost */
+    5ch; /* points */
+  align-items: center;
+  gap: 0.75rem;
+  
+  padding: 1rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.table-header-cell {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--clr-ternary-4);
+  text-transform: uppercase;
+  justify-self: center; 
+}
+
+.table-header-cell.team {
+  justify-self: flex-start;
+  margin-left: 5.2rem;
+}
+
+.table-container {
+  display: grid;
+  gap: 0.75rem;
+}

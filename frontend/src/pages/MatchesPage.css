@@ -9,8 +9,8 @@
   align-items: center;
 }
 
-.header-cell {
-  font-size: 0.9 rem;
+.match-header-cell {
+  font-size: 1rem;
   font-weight: 700;
   color: var(--clr-ternary-4);
   text-transform: uppercase;

@@ -51,9 +51,9 @@ const MatchesPage = () => {
       <div className="matches-page">
         <h1>Match Predictions</h1>
         <div className="match-header">
-          <div className="header-cell date">Date</div>
-          <div className="header-cell prediction">Prediction</div>
-          <div className="header-cell correct">Correct?</div>
+          <div className="match-header-cell date">Date</div>
+          <div className="match-header-cell prediction">Prediction</div>
+          <div className="match-header-cell correct">Correct?</div>
         </div>
 
         {matches.map((match) => {

@@ -1,0 +1,49 @@
+.standings-row {
+  /* Same as .table-grid in TablePage.css */
+  display: grid;
+  /* | Pos | Logo Team Name        | P | W | D | L | Pts | */
+  grid-template-columns:
+    3ch /* position */
+    minmax(220px, 1fr) /* team logo + name */
+    repeat(4, 4ch) /* played, won, drew, lost */
+    5ch; /* points */
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-sizing: border-box;
+  
+  background-color: var(--clr-ternary-3);
+  border: 3px solid var(--clr-ternary-4);
+  border-radius: 999px;
+}
+
+.standings-cell {
+  font-size: 1rem;
+  justify-self: center;
+}
+
+.position {
+  font-weight: 700;
+}
+
+.team-cell {
+  display: flex;
+  align-items: center;
+  margin-left: 5rem;
+}
+
+.team-cell img {
+  width: 3rem;
+  height: auto;
+  margin-right: 1rem;
+}
+
+.team-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-right: 1rem;
+}
+
+.team-acronym {
+  margin-right: 1rem;
+}
