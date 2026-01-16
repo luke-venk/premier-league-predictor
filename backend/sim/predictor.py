@@ -95,6 +95,32 @@ def normalize_current(df: pd.DataFrame, sportsbook: str) -> pd.DataFrame:
     ]
     return df[keep]
 
+# While the predictor currently returns team names like "Liverpool",
+# "Arsenal", etc., the frontend loads assets based on team IDs like
+# "LIV", "ARS", etc. This dictionary maps team names from the
+# Football-Data.co.uk CSV to IDs used in teams.json.
+team_to_id = {
+    "Arsenal": "ARS",
+    "Aston Villa": "AVL",
+    "Bournemouth": "BOU",
+    "Brentford": "BRE",
+    "Brighton": "BHA",
+    "Burnley": "BUR",
+    "Chelsea": "CHE",
+    "Crystal Palace": "CRY",
+    "Everton": "EVE",
+    "Fulham": "FUL",
+    "Leeds": "LEE",
+    "Liverpool": "LIV",
+    "Man City": "MCI",
+    "Man United": "MUN",
+    "Newcastle": "NEW",
+    "Nott'm Forest": "NFO",
+    "Sunderland": "SUN",
+    "Tottenham": "TOT",
+    "West Ham": "WHU",
+    "Wolves": "WOL"
+}
 
 class Predictor:
     def __init__(self):
@@ -182,14 +208,9 @@ class Predictor:
         for i, row in enumerate(df.itertuples(index=False)):
             out.append(
                 Match(
-                    date=(
-                        row.date.isoformat()
-                        if hasattr(row.date, "isoformat")
-                        else str(row.date)
-                    ),
-                    # TODO: is a rename map needed?
-                    home_id=row.home_team,
-                    away_id=row.away_team,
+                    date=row.date.strftime("%d/%m/%Y"),
+                    home_id=team_to_id[row.home_team],
+                    away_id=team_to_id[row.away_team],
                     prediction=pred_labels[i],
                     probabilities=Probability(
                         home_win=float(p_home[i]),
@@ -200,9 +221,3 @@ class Predictor:
             )
 
         return out
-
-
-if __name__ == "__main__":
-    p = Predictor()
-    pred = p.predict_current_season()
-    print(pred)
