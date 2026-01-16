@@ -184,8 +184,12 @@ def build_rolling_features(
     # Since we're using rolling averages, the first n_matches games will have NaN values, so drop them.
     # Only drop if both teams has missing data, since dropping rows hurts debugging.
     # df = df.dropna(subset=["form_goals_scored_home", "form_goals_scored_away"], how="all").reset_index(drop=True)
-    
     rolling_cols = [c for c in df.columns if c.startswith("form_")]
+
+    # However, with the extension of predicting on current sesaon matches, possession and valuation
+    # data are N/A. Thus, don't drop those.
+    rolling_cols = [c for c in rolling_cols if c != "form_possession_pct_home" and c != "form_possession_pct_away"]
+    
     df = df.dropna(subset=rolling_cols).reset_index(drop=True)
     
     # Add difference features (home - away) for improved PCA and interpretability
