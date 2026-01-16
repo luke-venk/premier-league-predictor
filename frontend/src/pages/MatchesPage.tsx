@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Match } from "../types/match";
 import MatchCard from "../components/MatchCard";
 import "./MatchesPage.css";
+import { Link } from "react-router-dom";
 
 const MatchesPage = () => {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -33,10 +34,22 @@ const MatchesPage = () => {
   } else if (error) {
     return <div>Error: {error}</div>;
   } else {
+    if (!matches.length) {
+      return (
+        <div className="matches-page empty">
+          <h1>Match Predictions</h1>
+          <p>
+            No simulation results yet. Please run a simulation from the {" "}
+            <Link to="/">Home Page</Link>.
+            </p>
+          
+        </div>    
+      )
+    }
+
     return (
       <div className="matches-page">
         <h1>Match Predictions</h1>
-
         <div className="match-header">
           <div className="header-cell date">Date</div>
           <div className="header-cell prediction">Prediction</div>

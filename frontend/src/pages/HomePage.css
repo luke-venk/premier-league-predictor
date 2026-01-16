@@ -1,0 +1,16 @@
+.latest-sim {
+    display: flex;
+    justify-self: center;
+    align-items: last baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.latest-sim-label {
+    font-size: 1.25rem;
+}
+
+.latest-sim-timestamp {
+    font-size: 1.25rem;
+    font-weight: 600;
+}

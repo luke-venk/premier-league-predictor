@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import "./HomePage.css";
 
 const HomePage = () => {
   const [runningSimulation, setRunningSimulation] = useState(false);
-  const [timestamp, setTimestamp] = useState("Run your first simulation.");
+  const [timestamp, setTimestamp] = useState<string | null>();
 
+  // If a simulation has been run before, get the latest timestamp.
+  useEffect(() => {
+    const fetchTimestamp = async () => {
+      try {
+        const res = await fetch("/api/matches");
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        const time = data.timestamp;
+        setTimestamp(time);
+      } catch {
+        setTimestamp(null);
+      }
+    };
+    fetchTimestamp();
+  }, []);
+  
   // If the simulation button is clicked, disable the button
   // until the backend provides a response.
   const handleButtonClick = async () => {
@@ -53,7 +71,10 @@ const HomePage = () => {
         <Link to="/about">About page</Link>.
       </p>
       <h2>Prediction Simulation Status</h2>
-      <h3>Latest Simulation Ran: {formatTimestamp(timestamp)}</h3>
+      <div className="latest-sim">
+        <div className="latest-sim-label">{timestamp ? "Latest Simulation Ran: " : ""}</div>
+        <div className="latest-sim-timestamp">{timestamp ? formatTimestamp(timestamp) : "Run your first simulation!"}</div>
+      </div>
       <Button
         onClick={handleButtonClick}
         className={runningSimulation ? "active" : ""}
