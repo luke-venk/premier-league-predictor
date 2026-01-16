@@ -44,7 +44,10 @@ const MatchesPage = () => {
         </div>
 
         {matches.map((match) => {
-          return <MatchCard match={match} />;
+          return <MatchCard 
+            key={`${match.date}-${match.homeId}-${match.awayId}`}
+            match={match}
+          />;
         })}
       </div>
     );
