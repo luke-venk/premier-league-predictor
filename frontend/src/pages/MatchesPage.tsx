@@ -12,7 +12,7 @@ const MatchesPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const response = await fetch("/api/simulate");
+        const response = await fetch("/api/matches");
         if (!response.ok) {
           throw new Error("Failed to fetch matches.");
         } else {

@@ -22,5 +22,6 @@ class Match(BaseModel):
     probabilities: Probability
 
 
-class SimulateResponse(BaseModel):
+class SimulationResponse(BaseModel):
+    timestamp: str
     matches: list[Match]

@@ -6,6 +6,9 @@ from pathlib import Path
 # The path to the project root.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
+# Path to the latest simulation results.
+SIM_PATH = PROJECT_ROOT / "backend" / "data" / "simulation_results.json"
+
 # Path to the model.
 MODEL_PATH = PROJECT_ROOT / "model" / "model.joblib"
 

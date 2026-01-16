@@ -6,9 +6,13 @@ returns function outputs to HTTP responses.
 """
 
 from fastapi import APIRouter
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import json
 
-from backend.api.schemas import SimulateResponse
+from backend.api.schemas import SimulationResponse
 from backend.sim.predictor import Predictor
+from backend.config import SIM_PATH
 
 router = APIRouter()
 
@@ -38,15 +42,42 @@ sample_matches = [
 
 
 # TODO: remove once functionality for POST is added, and stored in the DB.
-@router.post("/simulate", response_model=SimulateResponse)
+@router.post("/simulate", response_model=SimulationResponse)
 def simulate():
-    return {"matches": sample_matches}
-
-
-@router.get("/simulate", response_model=SimulateResponse)
-def simulate():
+    # Start the simulation and predict match outcomes.
     predictor = Predictor()
-    # TODO: indicate on website that simulation is in progress
     matches = predictor.predict_current_season()
     
-    return {"matches": matches}
+    # Convert from pydantic models to JSON serializable
+    matches = [m.model_dump() for m in matches]
+    
+    # Also store the timestamp.
+    # These should be isoformat for machine friendliness.
+    timestamp = datetime.now(ZoneInfo("America/Chicago")).isoformat()
+    
+    payload =  {
+        "timestamp": timestamp,
+        "matches": matches
+    }
+    
+    # Write to file.
+    with open(SIM_PATH, 'w') as f:
+        json.dump(payload, f)
+        
+    return payload
+
+@router.get("/matches", response_model=SimulationResponse)
+def get_matches():
+    """
+    Read match results from the latest simulation results.
+    If there is no such file, return an empty list.
+    """
+    try:
+        with open(SIM_PATH, 'r') as f:
+            payload = json.load(f)
+        return payload
+    except FileNotFoundError:
+        return {
+            "timestamp": "",
+            "matches": []
+        }
