@@ -27,6 +27,8 @@ def simulate():
     predictor = Predictor()
     matches = predictor.predict_current_season()
     
+    matches = [m.model_dump() for m in matches]
+    
     # Also store the timestamp.
     # These should be isoformat for machine friendliness.
     timestamp = datetime.now(ZoneInfo("America/Chicago")).isoformat()
