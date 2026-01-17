@@ -20,8 +20,21 @@ class Match(BaseModel):
     away_id: str = Field(alias="awayId")
     prediction: Literal["home_win", "draw", "away_win"]
     probabilities: Probability
+    
+class Standing(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    
+    position: int
+    team_id: str = Field(alias="teamId")
+    played: int
+    won: int
+    drew: int
+    lost: int
+    points: int
 
-
-class SimulationResponse(BaseModel):
+class MatchResponse(BaseModel):
     timestamp: str
     matches: list[Match]
+
+class TableResponse(BaseModel):
+    standings: list[Standing]

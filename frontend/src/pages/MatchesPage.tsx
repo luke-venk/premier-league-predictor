@@ -30,7 +30,7 @@ const MatchesPage = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading simulation...</div>;
+    return <div>Loading match predictions...</div>;
   } else if (error) {
     return <div>Error: {error}</div>;
   } else {
@@ -41,7 +41,7 @@ const MatchesPage = () => {
           <p>
             No simulation results yet. Please run a simulation from the {" "}
             <Link to="/">Home Page</Link>.
-            </p>
+          </p>
           
         </div>    
       )

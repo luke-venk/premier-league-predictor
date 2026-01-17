@@ -10,46 +10,22 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
 
-from backend.api.schemas import SimulationResponse
+from backend.api.schemas import MatchResponse, TableResponse
+from backend.api.simulation_store import load_simulation, save_simulation
 from backend.sim.predictor import Predictor
-from backend.config import SIM_PATH
+from backend.sim.generate_table import compute_standings
 
 router = APIRouter()
 
-sample_matches = [
-    {
-        "date": "01-01-2026",
-        "homeId": "ARS",
-        "awayId": "LIV",
-        "prediction": "draw",
-        "probabilities": {"homeWin": 0.25, "draw": 0.5, "awayWin": 0.25},
-    },
-    {
-        "date": "02-01-2026",
-        "homeId": "NEW",
-        "awayId": "LEE",
-        "prediction": "home_win",
-        "probabilities": {"homeWin": 0.8, "draw": 0.1, "awayWin": 0.1},
-    },
-    {
-        "date": "03-01-2026",
-        "homeId": "WHU",
-        "awayId": "NFO",
-        "prediction": "away_win",
-        "probabilities": {"homeWin": 0.4, "draw": 0.1, "awayWin": 0.5},
-    }
-]
-
-
-# TODO: remove once functionality for POST is added, and stored in the DB.
-@router.post("/simulate", response_model=SimulationResponse)
+@router.post("/simulate", response_model=MatchResponse)
 def simulate():
+    """
+    Creates a Predictor object to generate the feature matrix, predict
+    match outcomes, and save to file.
+    """
     # Start the simulation and predict match outcomes.
     predictor = Predictor()
     matches = predictor.predict_current_season()
-    
-    # Convert from pydantic models to JSON serializable
-    matches = [m.model_dump() for m in matches]
     
     # Also store the timestamp.
     # These should be isoformat for machine friendliness.
@@ -61,23 +37,35 @@ def simulate():
     }
     
     # Write to file.
-    with open(SIM_PATH, 'w') as f:
-        json.dump(payload, f)
+    save_simulation(payload)
         
     return payload
 
-@router.get("/matches", response_model=SimulationResponse)
+@router.get("/matches", response_model=MatchResponse)
 def get_matches():
     """
     Read match results from the latest simulation results.
     If there is no such file, return an empty list.
     """
-    try:
-        with open(SIM_PATH, 'r') as f:
-            payload = json.load(f)
-        return payload
-    except FileNotFoundError:
-        return {
-            "timestamp": "",
-            "matches": []
-        }
+    # Read simulation from file.
+    payload = load_simulation()
+    return payload
+
+@router.get("/table", response_model=TableResponse)
+def get_table():
+    """
+    Passes the match predictions from the latest simulation
+    results to the table generator script to return the predicted
+    standings.
+    """
+    # Read simulation results from file.
+    payload = load_simulation()
+    
+    # Extract the list of matches.
+    matches = payload["matches"]
+    
+    # Compute predicted standings.
+    standings = compute_standings(matches)
+    
+    # TODO: maybe persist this as well instead of computing on render.
+    return {"standings": standings}
