@@ -146,7 +146,7 @@ class Predictor:
 
         # Build the feature matrix.
         self.feature_matrix = build_rolling_features(df_all, N_MATCHES)
-
+        
         # Cache feature columns from engineered DataFrame.
         self.feature_cols = get_feature_columns(self.feature_matrix.columns)
 
@@ -202,6 +202,9 @@ class Predictor:
         p_home = probabilities[:, idx_home]
         p_draw = probabilities[:, idx_draw]
         p_away = probabilities[:, idx_away]
+        
+        # Determine the actual outcome from the DF.
+        label_map_actual = {"H": "home_win", "D": "draw", "A": "away_win"}
 
         # Build outputs.
         out = []
@@ -212,6 +215,7 @@ class Predictor:
                     home_id=team_to_id[row.home_team],
                     away_id=team_to_id[row.away_team],
                     prediction=pred_labels[i],
+                    actual=label_map_actual[row.result],
                     probabilities=Probability(
                         home_win=float(p_home[i]),
                         draw=float(p_draw[i]),
@@ -221,3 +225,7 @@ class Predictor:
             )
 
         return out
+
+if __name__ == "__main__":
+    p = Predictor()
+    p.predict_current_season()

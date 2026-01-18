@@ -8,9 +8,8 @@ returns function outputs to HTTP responses.
 from fastapi import APIRouter
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import json
 
-from backend.api.schemas import MatchResponse, TableResponse
+from backend.api.schemas import Match, MatchResponse, TableResponse
 from backend.api.simulation_store import load_simulation, save_simulation
 from backend.sim.predictor import Predictor
 from backend.sim.generate_table import compute_standings
@@ -27,7 +26,7 @@ def simulate():
     predictor = Predictor()
     matches = predictor.predict_current_season()
     
-    matches = [m.model_dump() for m in matches]
+    matches = [m.model_dump(by_alias=True) for m in matches]
     
     # Also store the timestamp.
     # These should be isoformat for machine friendliness.
@@ -65,6 +64,9 @@ def get_table():
     
     # Extract the list of matches.
     matches = payload["matches"]
+    
+    # Parse into Pydantic Match.
+    matches = [Match.model_validate(m) for m in matches]
     
     # Compute predicted standings.
     standings = compute_standings(matches)

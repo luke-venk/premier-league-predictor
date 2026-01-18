@@ -1,6 +1,8 @@
 import { useState } from "react";
 import teams from "../../teams.json";
 import type { Match } from "../types/match";
+import correctImg from "../assets/correct.png"
+import incorrectImg from "../assets/incorrect.png"
 import "./MatchCard.css";
 
 interface Props {
@@ -9,6 +11,7 @@ interface Props {
 
 const MatchCard = ({ match }: Props) => {
   const result = match.prediction;
+  const correct = match.prediction == match.actual;
 
   const [showPrediction, setShowPrediction] = useState(false);
   const clickHandler = () => {
@@ -79,6 +82,14 @@ const MatchCard = ({ match }: Props) => {
               </div>
             </div>
           </>
+        )}
+      </div>
+      <div className="correct">
+        {correct ? (
+          <img src={correctImg} alt="Correct"></img>
+        )
+        : (
+          <img src={incorrectImg} alt="Incorrect"></img>
         )}
       </div>
     </div>

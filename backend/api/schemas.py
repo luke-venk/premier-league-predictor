@@ -19,6 +19,7 @@ class Match(BaseModel):
     home_id: str = Field(alias="homeId")
     away_id: str = Field(alias="awayId")
     prediction: Literal["home_win", "draw", "away_win"]
+    actual: Literal["home_win", "draw", "away_win"]
     probabilities: Probability
     
 class Standing(BaseModel):

@@ -8,6 +8,7 @@ export interface Match {
   homeId: TeamId;
   awayId: TeamId;
   prediction: Result;
+  actual: Result;
   probabilities: {
     homeWin: number;
     draw: number;

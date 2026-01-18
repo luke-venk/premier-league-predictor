@@ -21,29 +21,29 @@ def compute_standings(matches: list[Match]) -> list[Standing]:
         
     # Iterate through each match and update the stats for each team.
     for match in matches:
-        pred = match["prediction"]
+        pred = match.prediction
         
         # Update the number of games played for each team.
-        standings[match["home_id"]].played += 1
-        standings[match["away_id"]].played += 1
+        standings[match.home_id].played += 1
+        standings[match.away_id].played += 1
         
         # Update the number of wins, draws, losses, and points for each team.
         if pred == "home_win":
-            standings[match["home_id"]].won += 1
-            standings[match["home_id"]].points += 3
+            standings[match.home_id].won += 1
+            standings[match.home_id].points += 3
             
-            standings[match["away_id"]].lost += 1
+            standings[match.away_id].lost += 1
         elif pred == "away_win":
-            standings[match["home_id"]].lost += 1
+            standings[match.home_id].lost += 1
             
-            standings[match["away_id"]].won += 1
-            standings[match["away_id"]].points += 3
+            standings[match.away_id].won += 1
+            standings[match.away_id].points += 3
         else:
-            standings[match["home_id"]].drew += 1
-            standings[match["home_id"]].points += 1
+            standings[match.home_id].drew += 1
+            standings[match.home_id].points += 1
             
-            standings[match["away_id"]].drew += 1
-            standings[match["away_id"]].points += 1
+            standings[match.away_id].drew += 1
+            standings[match.away_id].points += 1
     
     # Sort the standings based on points.
     standings = list(standings.values())
