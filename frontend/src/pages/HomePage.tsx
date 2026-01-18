@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import "./HomePage.css";
+import InfoCard from "../components/InfoCard";
 
 const HomePage = () => {
   const [runningSimulation, setRunningSimulation] = useState(false);
@@ -24,7 +25,7 @@ const HomePage = () => {
     };
     fetchTimestamp();
   }, []);
-  
+
   // If the simulation button is clicked, disable the button
   // until the backend provides a response.
   const handleButtonClick = async () => {
@@ -66,14 +67,36 @@ const HomePage = () => {
   return (
     <>
       <h1>Welcome to Premier League Predictor!</h1>
-      <p>
-        For more information on the project, please see the{" "}
+      <InfoCard title="About the Project">
+        Soccer is the world's game, and the English Premier League is its
+        most-watched sports league in the world.{" "}
+        <strong>Premier League Predictor</strong>{" "}
+        is a full-stack application I engineered to allow users to use a machine
+        learning model to predict the outcomes of Premier League matches for the
+        current 2025-2026 season.
+      </InfoCard>
+      <InfoCard>
+        This project builds on prior work in which my colleagues and I developed
+        a machine learning model to predict the outcomes of Premier League
+        matches. For more information about the model, please see the{" "}
         <Link to="/about">About page</Link>.
-      </p>
-      <h2>Prediction Simulation Status</h2>
+      </InfoCard>
+      <InfoCard title="Prediction Simulation Status">
+        The user will be allowed to run as many simulations as they would like, and this
+        application will store each of the simulation results. The user will be able to choose
+        which simulation they would like to explore in the <Link to="/matches">Matches page</Link>
+        and <Link to="/table">Table page</Link>, although the only difference between each simulation
+        will be the Premier League information available at the time of each simulation.
+      </InfoCard>
       <div className="latest-sim">
-        <div className="latest-sim-label">{timestamp ? "Latest Simulation Ran: " : ""}</div>
-        <div className="latest-sim-timestamp">{timestamp ? formatTimestamp(timestamp) : "Run your first simulation!"}</div>
+        <div className="latest-sim-label">
+          {timestamp ? "Latest Simulation Ran: " : ""}
+        </div>
+        <div className="latest-sim-timestamp">
+          {timestamp
+            ? formatTimestamp(timestamp)
+            : "Run your first simulation!"}
+        </div>
       </div>
       <Button
         onClick={handleButtonClick}

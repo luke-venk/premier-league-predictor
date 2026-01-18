@@ -1,0 +1,13 @@
+.info-card {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.info-title {
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.info-content {
+  line-height: 1.6;
+}
