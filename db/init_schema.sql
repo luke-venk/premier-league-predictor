@@ -5,7 +5,7 @@ CREATE TABLE simulation (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE match_prediction (
+CREATE TABLE match (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     simulation_id BIGINT NOT NULL REFERENCES simulation(id),
 
