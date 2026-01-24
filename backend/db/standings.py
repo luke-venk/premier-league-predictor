@@ -38,11 +38,11 @@ def get_standings(conn: psycopg.Connection, simulation_id: int) -> list[Standing
         cur.execute(f"SELECT * FROM standing WHERE simulation_id = {simulation_id};")
         out = cur.fetchall()
     
-    conn.commit()
     return out
 
 
 if __name__ == "__main__":
+    # TODO: remove
     from backend.db.connection import get_connection
     from backend.db.simulations import create_simulation
     from backend.sim.predictor import Predictor
