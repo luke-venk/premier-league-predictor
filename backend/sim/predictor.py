@@ -13,7 +13,7 @@ from joblib import load
 import pandas as pd
 
 from backend.config import FOOTBALL_DATA_URL, FOOTBALL_DATA_PATH, MODEL_PATH
-from backend.api.schemas import Match, Probability
+from backend.api.schemas import Match
 from model.config import END_YEAR, NUM_SEASONS, SPORTSBOOK, N_MATCHES
 from model.load_data import get_data_only
 from model.build_features import build_rolling_features, get_feature_columns
@@ -211,7 +211,7 @@ class Predictor:
         for i, row in enumerate(df.itertuples(index=False)):
             out.append(
                 Match(
-                    date=row.date,
+                    match_date=row.date,
                     home_id=team_to_id[row.home_team],
                     away_id=team_to_id[row.away_team],
                     p_home=float(p_home[i]),
@@ -223,7 +223,3 @@ class Predictor:
             )
 
         return out
-
-if __name__ == "__main__":
-    p = Predictor()
-    p.predict_current_season()

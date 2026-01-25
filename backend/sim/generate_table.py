@@ -1,8 +1,26 @@
-from backend.api.schemas import Match, Standing
-from backend.api.simulation_store import get_teams
+import json
 
+from backend.api.schemas import Match, Standing
+from backend.config import TEAMS_PATH
+
+
+def get_teams() -> list[str]:
+    """
+    Loads data from teams.json and returns a list of the 20 current
+    Premier League team acronyms.
+    """
+    try:
+        with open(TEAMS_PATH, "r") as f:
+            teams = json.load(f)
+        return list(teams.keys())
+    except FileNotFoundError:
+        return []
 
 def compute_standings(matches: list[Match]) -> list[Standing]:
+    """
+    Based on the match predictions for the season, compute the predicted
+    table standings.
+    """
     # Generate empty standings for each team before going through matches.
     teams = get_teams()
 

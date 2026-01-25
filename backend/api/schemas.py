@@ -14,7 +14,6 @@ class Probability(BaseModel):
 
 class Match(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    id: int
     
     match_date: date = Field(alias="matchDate")
     home_id: str = Field(alias="homeId")

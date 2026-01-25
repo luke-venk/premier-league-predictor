@@ -9,7 +9,6 @@ from fastapi import APIRouter
 
 from backend.db.connection import get_connection
 from backend.api.schemas import Match, Standing
-from backend.api.simulation_store import load_simulation, save_simulation
 from backend.sim.predictor import Predictor
 from backend.sim.generate_table import compute_standings
 from backend.db.simulations import list_simulations, create_simulation
@@ -23,7 +22,7 @@ conn = get_connection()
 
 
 @router.post("/simulate")
-def simulate():
+def simulate() -> None:
     """
     Creates a Predictor object to generate the feature matrix, predict
     match outcomes, and save to file.
@@ -38,19 +37,6 @@ def simulate():
     simulation_id = create_simulation(conn)
     insert_predictions(conn, simulation_id, matches)
     insert_standings(conn, simulation_id, standings)
-
-    # TODO: remove.
-    # Write to JSON file.
-    # Also store the timestamp in isoformat for machine friendliness.
-    # timestamp = datetime.now(ZoneInfo("America/Chicago")).isoformat()
-    # payload =  {
-    #     "timestamp": timestamp,
-    #     "matches": [m.model_dump(by_alias=True) for m in matches]
-    # }
-    # save_simulation(payload)
-
-    # return payload
-
 
 @router.get("/simulations")
 def get_simulations() -> list[dict]:
