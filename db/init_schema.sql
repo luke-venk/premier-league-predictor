@@ -8,6 +8,7 @@ CREATE TABLE simulation (
 CREATE TABLE match (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     simulation_id BIGINT NOT NULL REFERENCES simulation(id),
+    match_date DATE NOT NULL,
 
     home_id VARCHAR(3) NOT NULL,
     away_id VARCHAR(3) NOT NULL,
