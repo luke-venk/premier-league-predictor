@@ -18,7 +18,7 @@ const TablePage = () => {
           throw new Error("Failed to fetch table.");
         } else {
           const data = await res.json();
-          setStandings(data.standings);
+          setStandings(data);
         }
       } catch (e: any) {
         setError(e.message ?? "Unknown error.")

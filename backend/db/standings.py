@@ -39,21 +39,3 @@ def get_standings(conn: psycopg.Connection, simulation_id: int) -> list[Standing
         out = cur.fetchall()
     
     return out
-
-
-if __name__ == "__main__":
-    # TODO: remove
-    from backend.db.connection import get_connection
-    from backend.db.simulations import create_simulation
-    from backend.sim.predictor import Predictor
-    from backend.sim.generate_table import compute_standings
-
-    conn = get_connection()
-    predictor = Predictor()
-    matches = predictor.predict_current_season()
-    standings = compute_standings(matches)
-    print(f"The type of standings is: {type(standings)}")
-
-    sim_id = create_simulation(conn)
-    insert_standings(conn, sim_id, standings)
-    print(get_standings(conn, sim_id))
