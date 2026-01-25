@@ -211,7 +211,7 @@ class Predictor:
         for i, row in enumerate(df.itertuples(index=False)):
             out.append(
                 Match(
-                    date=row.date.strftime("%d/%m/%Y"),
+                    date=row.date,
                     home_id=team_to_id[row.home_team],
                     away_id=team_to_id[row.away_team],
                     prediction=pred_labels[i],

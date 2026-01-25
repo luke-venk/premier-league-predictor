@@ -9,7 +9,6 @@ const MatchesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: replace this all by getting data from database
   useEffect(() => {
     const load = async () => {
       try {
@@ -18,7 +17,7 @@ const MatchesPage = () => {
           throw new Error("Failed to fetch matches.");
         } else {
           const data = await response.json();
-          setMatches(data.matches);
+          setMatches(data);
         }
       } catch (e: any) {
         setError(e.message ?? "Unknown error.");
@@ -58,7 +57,7 @@ const MatchesPage = () => {
 
         {matches.map((match) => {
           return <MatchCard 
-            key={`${match.date}-${match.homeId}-${match.awayId}`}
+            key={match.id}
             match={match}
           />;
         })}

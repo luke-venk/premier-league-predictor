@@ -19,9 +19,9 @@ def insert_predictions(
             cur.execute(
                 f"""
                         INSERT INTO match
-                        (simulation_id, home_id, away_id, p_home, p_draw, p_away, prediction, actual)
+                        (simulation_id, match_date, home_id, away_id, p_home, p_draw, p_away, prediction, actual)
                         VALUES
-                        ({simulation_id}, '{match.home_id}', '{match.away_id}',
+                        ({simulation_id}, '{match.date}', '{match.home_id}', '{match.away_id}',
                         {match.probabilities.home_win}, {match.probabilities.draw}, {match.probabilities.away_win},
                         '{match.prediction}', '{match.actual}'
                         );

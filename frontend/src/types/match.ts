@@ -4,6 +4,7 @@ export type TeamId = keyof typeof teams;
 export type Result = "home_win" | "draw" | "away_win";
 
 export interface Match {
+  id: number;
   date: string;
   homeId: TeamId;
   awayId: TeamId;

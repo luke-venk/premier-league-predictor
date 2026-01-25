@@ -54,9 +54,3 @@ def compute_standings(matches: list[Match]) -> list[Standing]:
         standings[i].position = i + 1
 
     return standings
-
-if __name__ == "__main__":
-    from backend.api.simulation_store import load_simulation
-    payload = load_simulation()
-    matches = payload["matches"]
-    standings = compute_standings(matches)
