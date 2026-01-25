@@ -42,24 +42,24 @@ const MatchCard = ({ match }: Props) => {
             <div
               className="probseg home"
               style={{
-                flex: match.probabilities.homeWin,
+                flex: match.p_home,
                 backgroundColor: teams[match.homeId].color.primary,
                 color: teams[match.homeId].color.secondary,
               }}
             >
-              {Math.round(match.probabilities.homeWin * 100)}%
+              {Math.round(match.p_home * 100)}%
             </div>
             <div className="probseg draw" style={{
-              flex: match.probabilities.draw
+              flex: match.p_draw
             }}>
-              {Math.round(match.probabilities.draw * 100)}%
+              {Math.round(match.p_draw * 100)}%
             </div>
             <div className="probseg away" style={{
-              flex: match.probabilities.awayWin,
+              flex: match.p_away,
               backgroundColor: teams[match.awayId].color.primary,
               color: teams[match.awayId].color.secondary
             }}>
-              {Math.round(match.probabilities.awayWin * 100)}%
+              {Math.round(match.p_away * 100)}%
             </div>
           </div>
         ) : (
