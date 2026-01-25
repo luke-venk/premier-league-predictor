@@ -21,8 +21,8 @@ def insert_predictions(
                         INSERT INTO match
                         (simulation_id, match_date, home_id, away_id, p_home, p_draw, p_away, prediction, actual)
                         VALUES
-                        ({simulation_id}, '{match.date}', '{match.home_id}', '{match.away_id}',
-                        {match.probabilities.home_win}, {match.probabilities.draw}, {match.probabilities.away_win},
+                        ({simulation_id}, '{match.match_date}', '{match.home_id}', '{match.away_id}',
+                        {match.p_home}, {match.p_draw}, {match.p_away},
                         '{match.prediction}', '{match.actual}'
                         );
                         """

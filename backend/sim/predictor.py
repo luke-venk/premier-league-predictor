@@ -214,13 +214,11 @@ class Predictor:
                     date=row.date,
                     home_id=team_to_id[row.home_team],
                     away_id=team_to_id[row.away_team],
+                    p_home=float(p_home[i]),
+                    p_draw=float(p_draw[i]),
+                    p_away=float(p_away[i]),   
                     prediction=pred_labels[i],
                     actual=label_map_actual[row.result],
-                    probabilities=Probability(
-                        home_win=float(p_home[i]),
-                        draw=float(p_draw[i]),
-                        away_win=float(p_away[i]),
-                    ),
                 )
             )
 

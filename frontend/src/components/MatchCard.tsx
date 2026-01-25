@@ -30,7 +30,7 @@ const MatchCard = ({ match }: Props) => {
 
   return (
     <div className="matchcard">
-      <div className="matchdate">{match.date}</div>
+      <div className="matchdate">{match.matchDate}</div>
 
       <div
         className={`matchpill ${result} ${showPrediction ? "expanded" : ""}`}

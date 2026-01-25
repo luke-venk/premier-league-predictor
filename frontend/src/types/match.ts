@@ -5,7 +5,7 @@ export type Result = "home_win" | "draw" | "away_win";
 
 export interface Match {
   id: number;
-  date: string;
+  matchDate: string;
   homeId: TeamId;
   awayId: TeamId;
   prediction: Result;

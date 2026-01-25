@@ -8,9 +8,8 @@ returns function outputs to HTTP responses.
 from fastapi import APIRouter
 
 from backend.db.connection import get_connection
-from backend.api.schemas import MatchOut, Standing
+from backend.api.schemas import Match, Standing
 from backend.api.simulation_store import load_simulation, save_simulation
-from backend.api.interface import db_to_ui_matches
 from backend.sim.predictor import Predictor
 from backend.sim.generate_table import compute_standings
 from backend.db.simulations import list_simulations, create_simulation
@@ -70,15 +69,14 @@ def get_latest_simulation_id():
     return simulations[-1]["id"]
 
 
-@router.get("/matches", response_model=list[MatchOut])
+@router.get("/matches", response_model=list[Match])
 def get_matches():
     """
     Read match results from the latest simulation results.
     If there is no such file, return an empty list.
     """
     simulation_id = get_latest_simulation_id()
-    rows = get_predictions(conn, simulation_id)
-    return [db_to_ui_matches(r) for r in rows]
+    return get_predictions(conn, simulation_id)
 
 
 @router.get("/table", response_model=list[Standing])
@@ -88,22 +86,5 @@ def get_table():
     results to the table generator script to return the predicted
     standings.
     """
-    if False:
-        # Read simulation results from file.
-        payload = load_simulation()
-
-        # Extract the list of matches.
-        matches = payload["matches"]
-
-        # Parse into Pydantic Match.
-        matches = [Match.model_validate(m) for m in matches]
-
-        # Compute predicted standings.
-        standings = compute_standings(matches)
-
-        # TODO: maybe persist this as well instead of computing on render.
-        return {"standings": standings}
-    else:
-        simulation_id = get_latest_simulation_id()
-        rows = get_standings(conn, simulation_id)
-        return rows
+    simulation_id = get_latest_simulation_id()
+    return get_standings(conn, simulation_id)
