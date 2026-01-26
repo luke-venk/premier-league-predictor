@@ -34,7 +34,7 @@ def get_simulation(conn: psycopg.Connection, simulation_id: int) -> tuple:
     Given a specific simulation ID, return the simulation from the database.
     """
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM simulation WHERE id = {simulation_id};")
+        cur.execute("SELECT * FROM simulation WHERE id = %s;", (simulation_id))
         answer = cur.fetchone()
 
     return answer

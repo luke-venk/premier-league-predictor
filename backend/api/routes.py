@@ -13,7 +13,7 @@ from backend.db.predictions import insert_predictions, get_predictions
 from backend.db.standings import insert_standings, get_standings
 
 router = APIRouter()
-conn = get_connection()
+# conn = get_connection()
 
 
 @router.post("/simulate")
@@ -31,13 +31,14 @@ def simulate() -> dict:
 
     # Create new simulation ID and save the results to database.
     try:
-        with conn.transaction():        
-            simulation_id = create_simulation(conn)
-            insert_predictions(conn, simulation_id, matches)
-            insert_standings(conn, simulation_id, standings)
+        with get_connection() as conn:
+            with conn.transaction():        
+                simulation_id = create_simulation(conn)
+                insert_predictions(conn, simulation_id, matches)
+                insert_standings(conn, simulation_id, standings)
         return {"ok": True, "simulation_id": simulation_id}
-    except:
-        return {"ok": False}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 @router.get("/simulations")
@@ -46,7 +47,8 @@ def get_simulations() -> list[dict]:
     Returns a list of simulation objects. Each entry will be a dictionary
     containing simulation ID's and timestamps created.
     """
-    simulations = list_simulations(conn)
+    with get_connection() as conn:
+        simulations = list_simulations(conn)
     return simulations
 
 
@@ -59,7 +61,8 @@ def get_latest_simulation_id() -> int:
     
     Returns -1 if there are no simulations in the database.
     """
-    simulations = list_simulations(conn)
+    with get_connection() as conn:
+        simulations = list_simulations(conn)
     return simulations[-1]["id"] if simulations else -1
 
 @router.delete("/simulations")
@@ -68,8 +71,9 @@ def clear_data() -> dict:
     Deletes all data in the simulation, match, and standing tables.
     """
     try:
-        delete_simulations(conn)
-        conn.commit()
+        with get_connection() as conn:
+            delete_simulations(conn)
+            conn.commit()
         return {"ok": True}
     except:
         return {"ok": False}
@@ -83,7 +87,8 @@ def get_matches(simulation: int = 0):
     simulation_id = simulation if simulation != 0 else get_latest_simulation_id()
     
     # If simulation ID is -1, there are no entries in the database.
-    return get_predictions(conn, simulation_id) if simulation_id != -1 else []
+    with get_connection() as conn:
+        return get_predictions(conn, simulation_id) if simulation_id != -1 else []
 
 
 @router.get("/table", response_model=list[Standing])
@@ -93,4 +98,5 @@ def get_table(simulation: int=0):
     """
     simulation_id = simulation if simulation != 0 else get_latest_simulation_id()
     # If simulation ID is -1, there are no entries in the database.
-    return get_standings(conn, simulation_id) if simulation_id != -1 else []
+    with get_connection() as conn:
+        return get_standings(conn, simulation_id) if simulation_id != -1 else []

@@ -18,11 +18,21 @@ def insert_standings(
         for standing in standings:
             cur.execute(
                 f"""
-                        INSERT INTO standing
-                        (simulation_id, team_id, position, played, won, drew, lost, points)
-                        VALUES
-                        ({simulation_id}, '{standing.team_id}', {standing.position}, {standing.played}, {standing.won}, {standing.drew}, {standing.lost}, {standing.points});
-                        """
+                INSERT INTO standing
+                (simulation_id, team_id, position, played, won, drew, lost, points)
+                VALUES
+                (%s, %s, %s, %s, %s, %s, %s, %s);
+                """,
+                (
+                    simulation_id,
+                    standing.team_id,
+                    standing.position,
+                    standing.played,
+                    standing.won,
+                    standing.drew,
+                    standing.lost,
+                    standing.points,
+                ),
             )
 
 
@@ -32,7 +42,7 @@ def get_standings(conn: psycopg.Connection, simulation_id: int) -> list[Standing
     with the simulation.
     """
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM standing WHERE simulation_id = {simulation_id};")
+        cur.execute("SELECT * FROM standing WHERE simulation_id = %s;", (simulation_id, ))
         out = cur.fetchall()
-    
+
     return out

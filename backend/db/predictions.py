@@ -17,15 +17,23 @@ def insert_predictions(
     with conn.cursor() as cur:
         for match in predictions:
             cur.execute(
-                f"""
-                        INSERT INTO match
-                        (simulation_id, match_date, home_id, away_id, p_home, p_draw, p_away, prediction, actual)
-                        VALUES
-                        ({simulation_id}, '{match.match_date}', '{match.home_id}', '{match.away_id}',
-                        {match.p_home}, {match.p_draw}, {match.p_away},
-                        '{match.prediction}', '{match.actual}'
-                        );
-                        """
+                """
+                INSERT INTO match
+                (simulation_id, match_date, home_id, away_id, p_home, p_draw, p_away, prediction, actual)
+                VALUES
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+                """,
+                (
+                    simulation_id,
+                    match.match_date,
+                    match.home_id,
+                    match.away_id,
+                    match.p_home,
+                    match.p_draw,
+                    match.p_away,
+                    match.prediction,
+                    match.actual,
+                ),
             )
 
 
@@ -35,7 +43,7 @@ def get_predictions(conn: psycopg.Connection, simulation_id: int) -> list[dict]:
     with the simulation.
     """
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM match WHERE simulation_id = {simulation_id};")
+        cur.execute("SELECT * FROM match WHERE simulation_id = %s;", (simulation_id,))
         out = cur.fetchall()
 
     return out
