@@ -1,8 +1,5 @@
 """
-Defines HTTP endpoints for the API to use.
-
-Translates HTTP request to the appropriate sim/ function calls, and
-returns function outputs to HTTP responses.
+Defines the HTTP endpoints for the API to use.
 """
 
 from fastapi import APIRouter
@@ -38,6 +35,7 @@ def simulate() -> None:
     insert_predictions(conn, simulation_id, matches)
     insert_standings(conn, simulation_id, standings)
 
+
 @router.get("/simulations")
 def get_simulations() -> list[dict]:
     """
@@ -48,29 +46,29 @@ def get_simulations() -> list[dict]:
     return simulations
 
 
-@router.get("/get_latest_simulation_id")
-def get_latest_simulation_id():
-    # TODO: remove: Just for testing
+def get_latest_simulation_id() -> int:
+    """
+    Returns the ID of the latest ran simulation. This will be used
+    as a default option if the user does not specify a specific
+    simulation.
+    """
     simulations = list_simulations(conn)
     return simulations[-1]["id"]
 
 
 @router.get("/matches", response_model=list[Match])
-def get_matches():
+def get_matches(simulation: int = 0):
     """
-    Read match results from the latest simulation results.
-    If there is no such file, return an empty list.
+    Read match results from a specified simulation.
     """
-    simulation_id = get_latest_simulation_id()
+    simulation_id = simulation if simulation != 0 else get_latest_simulation_id()
     return get_predictions(conn, simulation_id)
 
 
 @router.get("/table", response_model=list[Standing])
-def get_table():
+def get_table(simulation: int=0):
     """
-    Passes the match predictions from the latest simulation
-    results to the table generator script to return the predicted
-    standings.
+    Read computed standings from a specified simulation.
     """
-    simulation_id = get_latest_simulation_id()
+    simulation_id = simulation if simulation != 0 else get_latest_simulation_id()
     return get_standings(conn, simulation_id)

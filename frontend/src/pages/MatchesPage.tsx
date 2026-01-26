@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import type { Match } from "../types/match";
 import MatchCard from "../components/MatchCard";
 import "./MatchesPage.css";
-import { Link } from "react-router-dom";
 
 const MatchesPage = () => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Allow the user to specify simulation IDs via search params.
+  const [searchParams] = useSearchParams();
+  const simId = searchParams.get("simulation");
+
+  // Load the matches.
   useEffect(() => {
     const load = async () => {
       try {
-        const response = await fetch("/api/matches");
-        if (!response.ok) {
+        const url = simId ? `/api/matches?simulation=${simId}` : "/api/matches"
+        const res = await fetch(url);
+        if (!res.ok) {
           throw new Error("Failed to fetch matches.");
         } else {
-          const data = await response.json();
+          const data = await res.json();
           setMatches(data);
         }
       } catch (e: any) {
@@ -26,7 +32,7 @@ const MatchesPage = () => {
       }
     };
     load();
-  }, []);
+  }, [simId]);
 
   if (loading) {
     return <div>Loading match predictions...</div>;
@@ -38,7 +44,7 @@ const MatchesPage = () => {
         <div className="matches-page empty">
           <h1>Match Predictions</h1>
           <p>
-            No simulation results yet. Please run a simulation from the {" "}
+            No simulation results. Please select a valid simulation from the {" "}
             <Link to="/">Home Page</Link>.
           </p>
           

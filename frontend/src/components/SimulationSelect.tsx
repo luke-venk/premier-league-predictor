@@ -1,26 +1,53 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { Simulation } from "../types/simulation";
 import Button from "./Button";
 import "./SimulationSelect.css";
 
-interface Props {
-  value: number | null;
-  onChange: (id: number) => void;
-}
-
-const SimulationSelect = ({ value, onChange }: Props) => {
+const SimulationSelect = () => {
   const [simulations, setSimulations] = useState<Simulation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Allow the user to specify simulation IDs via search params.
+  // selectedSimId is derived from the URL.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const simParam = searchParams.get("simulation");
+  const selectedSimId = simParam ? Number(simParam) : null;
+
+  // Dropdown draft selection, although selection only occurs when
+  // the button is clicked.
+  // draftSimId is derived from local state.
+  const [draftSimId, setDraftSimId] = useState<number | "">("");
+  
+  // Keep draft selection in sync when the URL changes.
+  useEffect(() => {
+    setDraftSimId(selectedSimId ?? "");
+  }, [selectedSimId]);
+
+  // Enable applying the selection of the dropdown simulation
+  // ID when the button is clicked.
+  const applySelection = () => {
+    if (draftSimId === "") return;
+    const next = new URLSearchParams(searchParams);
+    next.set("simulation", String(draftSimId));
+    setSearchParams(next);
+  };
 
   // Load the list of simulations from the /simulations endpoint.
   useEffect(() => {
     const load = async () => {
-      const res = await fetch("/api/simulations");
-      if (!res.ok) {
-        throw new Error("Failed to fetch simulations");
-      } else {
-        const data = await res.json();
-        setSimulations(data);
+      try {
+        const res = await fetch("/api/simulations");
+        if (!res.ok) {
+          throw new Error("Failed to fetch simulations");
+        } else {
+          const data = await res.json();
+          setSimulations(data);
+        }
+      } catch (e: any) {
+        setError(e.message ?? "Unknown error.");
+      } finally {
         setLoading(false);
       }
     };
@@ -29,17 +56,21 @@ const SimulationSelect = ({ value, onChange }: Props) => {
 
   if (loading) {
     return <div>Loading simulations...</div>;
+  } else if (error) {
+    return <div>Error: {error}</div>
   }
 
   return (
     <div>
       <div className="simulation-select-container">
-        <div className="simulation-select-text">Simulation:</div>
+        <span className="simulation-select-text">Simulation:</span>
+
         <label className="simulation-select-dropdown">
           <select
-            value={value ?? ""}
-            onChange={(e) => onChange(Number(e.target.value))}
+            value={draftSimId}
+            onChange={(e) => setDraftSimId(e.target.value === "" ? "" : Number(e.target.value))}
           >
+            <option value="">Select a simulation...</option>
             {simulations.map((simulation) => (
               <option key={simulation.id} value={simulation.id}>
                 Simulation #{simulation.id} -{" "}
@@ -48,12 +79,19 @@ const SimulationSelect = ({ value, onChange }: Props) => {
             ))}
           </select>
         </label>
-        <Button color="blue" size="small">
+        
+        <Button 
+          color="blue"
+          size="small"
+          onClick={applySelection}
+          disabled={draftSimId === "" || draftSimId === selectedSimId}
+        >
           Select
         </Button>
       </div>
-      <div className="simulation-status">
-        <div className="simulation-select-text">Currently Selected Simulation: </div>
+
+      <div className="simulation-select-text">
+        Currently Selected Simulation: {selectedSimId ?? "None"}
       </div>
     </div>
   );

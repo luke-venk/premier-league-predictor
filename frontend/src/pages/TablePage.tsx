@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import type { Standing } from "../types/standing";
 import TableCard from "../components/TableCard";
 import "./TablePage.css";
-import { Link } from "react-router-dom";
 
 const TablePage = () => {
   const [standings, setStandings] = useState<Standing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: replace this all by getting data from database
+  // Allow the user to specify simulation IDs via search params.
+  const [searchParams] = useSearchParams();
+  const simId = searchParams.get("simulation");
+
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/table");
+        const url = simId ? `/api/table?simulation=${simId}` : "/api/table"
+        const res = await fetch(url);
         if (!res.ok) {
           throw new Error("Failed to fetch table.");
         } else {
@@ -27,7 +31,7 @@ const TablePage = () => {
       }
     };
     load();
-  }, []);
+  }, [simId]);
   
   if (loading) {
     return <div>Loading table...</div>
@@ -39,14 +43,13 @@ const TablePage = () => {
         <div className="table-page empty">
           <h1>Table Predictions</h1>
           <p>
-            No simulation results yet. Please run a simulation from the {" "}
+            No simulation results. Please select a valid simulation from the {" "}
             <Link to="/">Home Page</Link>.
           </p>
         </div>
       )
     }
   }
-
   return (
     <div className="table-page">
       <h1>Table Predictions</h1>

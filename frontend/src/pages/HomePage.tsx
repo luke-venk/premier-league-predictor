@@ -7,7 +7,6 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
-  const [simulationId, setSimulationId] = useState<number>(1);
 
   // If the simulation button is clicked, disable the button
   // until the backend provides a response.
@@ -50,10 +49,12 @@ const HomePage = () => {
       <InfoCard title="Choose Simulation">
         The user will be allowed to run as many simulations as they would like, and the
         application will store each of the simulation results. The user will be able to choose
-        which simulation they would like to explore in the <Link to="/matches">Matches page</Link>
-        {" "} and <Link to="/table">Table page</Link>.
+        which simulation they would like to explore in the {" "}
+        <Link to={`/matches`}>Matches page</Link>
+        {" "} and {" "}
+        <Link to="/table">Table page</Link>.
       </InfoCard>
-      <SimulationSelect value={simulationId} onChange={setSimulationId} />
+      <SimulationSelect />
       <br></br>
       <Button
         onClick={handleButtonClick}
