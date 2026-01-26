@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import InfoCard from "../components/InfoCard";
 import Button from "../components/Button";
 import SimulationSelect from "../components/SimulationSelect";
@@ -7,6 +7,10 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
+
+  const [searchParams] = useSearchParams();
+  const search = searchParams.toString();
+  const suffix = search ? `?${search}` : "";
 
   // If the simulation button is clicked, disable the button
   // until the backend provides a response.
@@ -50,12 +54,13 @@ const HomePage = () => {
         The user will be allowed to run as many simulations as they would like, and the
         application will store each of the simulation results. The user will be able to choose
         which simulation they would like to explore in the {" "}
-        <Link to={`/matches`}>Matches page</Link>
+        <Link to={`/matches${suffix}`}>Matches page</Link>
         {" "} and {" "}
-        <Link to="/table">Table page</Link>.
+        <Link to={`/table${suffix}`}>Table page</Link>.
       </InfoCard>
+
       <SimulationSelect />
-      <br></br>
+      
       <Button
         onClick={handleButtonClick}
         disabled={runningSimulation}

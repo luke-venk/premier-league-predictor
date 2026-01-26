@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import type { Match } from "../types/match";
 import MatchCard from "../components/MatchCard";
+import SimulationSelect from "../components/SimulationSelect";
 import "./MatchesPage.css";
 
 const MatchesPage = () => {
@@ -55,6 +56,7 @@ const MatchesPage = () => {
     return (
       <div className="matches-page">
         <h1>Match Predictions</h1>
+        <SimulationSelect />
         <div className="match-header">
           <div className="match-header-cell date">Date</div>
           <div className="match-header-cell prediction">Prediction</div>

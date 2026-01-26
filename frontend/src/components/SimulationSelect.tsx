@@ -61,7 +61,7 @@ const SimulationSelect = () => {
   }
 
   return (
-    <div>
+    <div className="simulation-select">
       <div className="simulation-select-container">
         <span className="simulation-select-text">Simulation:</span>
 

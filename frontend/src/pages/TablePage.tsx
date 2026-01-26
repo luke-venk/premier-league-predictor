@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import type { Standing } from "../types/standing";
 import TableCard from "../components/TableCard";
+import SimulationSelect from "../components/SimulationSelect";
 import "./TablePage.css";
 
 const TablePage = () => {
@@ -53,6 +54,7 @@ const TablePage = () => {
   return (
     <div className="table-page">
       <h1>Table Predictions</h1>
+      <SimulationSelect />
       <div className="table-grid table-header">
         <div className="table-header-cell">Pos</div>
         <div className="table-header-cell team">Team</div>
