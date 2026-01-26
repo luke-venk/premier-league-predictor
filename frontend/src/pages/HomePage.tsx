@@ -10,13 +10,13 @@ const HomePage = () => {
   const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
   const { refresh } = useSimulations();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.toString();
   const suffix = search ? `?${search}` : "";
 
   // If the simulation button is clicked, disable the button
   // until the backend provides a response.
-  const handleButtonClick = async () => {
+  const handleRunSimulation = async () => {
     if (runningSimulation) return;
     setRunningSimulation(true);
     try {
@@ -37,6 +37,23 @@ const HomePage = () => {
     }
   };
 
+  // Allow the user to clear all the simulations they have run.
+  const handleClearSimulations = async () => {
+    // Clear simulations from database.
+    const res = await fetch("/api/simulations", { method: "DELETE" });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    // Clear the simulation query parameter from the URL.
+    const next = new URLSearchParams(searchParams);
+    next.delete("simulation");
+    setSearchParams(next);
+
+    // Refresh simulation select.
+    await refresh();
+  };
+
   return (
     <>
       <h1>Welcome to Premier League Predictor!</h1>
@@ -54,24 +71,33 @@ const HomePage = () => {
         <Link to="/about">About page</Link>.
       </InfoCard>
       <InfoCard title="Choose Simulation">
-        The user will be allowed to run as many simulations as they would like,
-        and the application will store each of the simulation results. The user
-        will be able to choose which simulation they would like to explore in
-        the <Link to={`/matches${suffix}`}>Matches page</Link> and{" "}
+        The user can run as many simulations as they'd like, and they can explore
+        the results of any simulation they have run in the {" "}
+        <Link to={`/matches${suffix}`}>Matches page</Link> and{" "}
         <Link to={`/table${suffix}`}>Table page</Link>.
       </InfoCard>
 
       <SimulationSelect />
 
-      <Button
-        onClick={handleButtonClick}
-        disabled={runningSimulation}
-        color="green"
-        size="large"
-        className={runningSimulation ? "active" : ""}
-      >
-        {runningSimulation ? "Running Simulation..." : "Run New Simulation"}
-      </Button>
+      <div className="button-row">
+        <Button
+          onClick={handleRunSimulation}
+          disabled={runningSimulation}
+          color="green"
+          size="large"
+          className={runningSimulation ? "active" : ""}
+        >
+          {runningSimulation ? "Running Simulation..." : "Run New Simulation"}
+        </Button>
+
+        <Button
+          onClick={handleClearSimulations}
+          color="red"
+          size="large"
+        >
+          Clear All Simulations
+        </Button>
+      </div>
     </>
   );
 };

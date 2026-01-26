@@ -5,7 +5,7 @@ interface Props {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-  color?: "blue" | "green";
+  color?: "red" | "green" | "blue";
   size?: "small" | "large";
   className?: string;
 }

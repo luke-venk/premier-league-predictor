@@ -9,7 +9,7 @@ from backend.api.schemas import Standing
 
 def insert_standings(
     conn: psycopg.Connection, simulation_id: int, standings: list[Standing]
-) -> int:
+) -> None:
     """
     Given the computed standings for a simulation, insert the standings into
     the database.
@@ -24,9 +24,6 @@ def insert_standings(
                         ({simulation_id}, '{standing.team_id}', {standing.position}, {standing.played}, {standing.won}, {standing.drew}, {standing.lost}, {standing.points});
                         """
             )
-
-    conn.commit()
-    return simulation_id
 
 
 def get_standings(conn: psycopg.Connection, simulation_id: int) -> list[Standing]:

@@ -9,7 +9,7 @@ from backend.api.schemas import Match
 
 def insert_predictions(
     conn: psycopg.Connection, simulation_id: int, predictions: list[Match]
-):
+) -> None:
     """
     Given the season's predicted match outcomes for a given simulation,
     insert the predictions into the database.
@@ -27,8 +27,6 @@ def insert_predictions(
                         );
                         """
             )
-
-    conn.commit()
 
 
 def get_predictions(conn: psycopg.Connection, simulation_id: int) -> list[dict]:

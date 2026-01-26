@@ -15,7 +15,6 @@ def create_simulation(conn: psycopg.Connection) -> int:
         cur.execute("INSERT INTO simulation DEFAULT VALUES RETURNING id;")
         row = cur.fetchone()
 
-    conn.commit()
     return row["id"]
 
 
@@ -30,7 +29,7 @@ def list_simulations(conn: psycopg.Connection) -> list[tuple]:
     return answer
 
 
-def get_simulation(conn: psycopg.Connection, simulation_id: int) -> None:
+def get_simulation(conn: psycopg.Connection, simulation_id: int) -> tuple:
     """
     Given a specific simulation ID, return the simulation from the database.
     """
@@ -39,3 +38,15 @@ def get_simulation(conn: psycopg.Connection, simulation_id: int) -> None:
         answer = cur.fetchone()
 
     return answer
+
+def delete_simulations(conn: psycopg.Connection) -> None:
+    """
+    Completely empties the simulation, match, and standing tables. Also
+    restarts their auto-incrementing IDs and clears dependent tables.
+    
+    Returns true if successful.
+    """
+    with conn.cursor() as cur:
+        cur.execute("""TRUNCATE TABLE simulation, match, standing
+                    RESTART IDENTITY
+                    CASCADE;""")

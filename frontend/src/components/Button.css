@@ -40,6 +40,14 @@
   background-color: rgb(41, 123, 255);
 }
 
+.btn-red {
+  background-color: rgb(167, 0, 0);
+}
+
+.btn-red:hover {
+  background-color: rgb(225, 0, 0);
+}
+
 /* Running Simulations */
 
 .active:hover {
