@@ -1,0 +1,5 @@
+.button-row {
+  display: flex;
+  justify-self: center;
+  gap: 2rem;
+}

@@ -85,13 +85,13 @@ const HomePage = () => {
           disabled={runningSimulation}
           color="green"
           size="large"
-          className={runningSimulation ? "active" : ""}
         >
           {runningSimulation ? "Running Simulation..." : "Run New Simulation"}
         </Button>
 
         <Button
           onClick={handleClearSimulations}
+          disabled={runningSimulation}
           color="red"
           size="large"
         >

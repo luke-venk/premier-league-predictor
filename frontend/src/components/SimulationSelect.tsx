@@ -68,8 +68,9 @@ const SimulationSelect = () => {
         </Button>
       </div>
 
-      <div className="simulation-select-text">
-        Currently Selected Simulation: {selectedSimId ?? "None"}
+      <div className="simulation-status">
+        <span className="simulation-status-label">Currently Selected: {" "}</span>
+        <span className="simulation-status-text">{selectedSimId ? `Simulation #${selectedSimId}` : "None"}</span>
       </div>
     </div>
   );

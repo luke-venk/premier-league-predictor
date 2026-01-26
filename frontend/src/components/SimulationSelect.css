@@ -3,8 +3,8 @@
 }
 
 .simulation-select-text {
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .simulation-select-container {
@@ -22,4 +22,19 @@
   font-size: 1rem;
   border-radius: 10px;
   border: 1px solid #aaa;
+  width: 20rem;
+}
+
+.simulation-status {
+  margin-top: 1rem;
+}
+
+.simulation-status-label {
+  font-size: 1.1rem;
+}
+
+.simulation-status-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: underline;
 }

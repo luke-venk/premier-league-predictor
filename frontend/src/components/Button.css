@@ -32,12 +32,26 @@
   background-color: var(--clr-secondary-4);
 }
 
+.btn-green:disabled {
+  background-color: rgb(0, 241, 136);
+  color: var(--clr-primary-5);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .btn-blue {
   background-color: rgb(1, 36, 159);
 }
 
 .btn-blue:hover {
   background-color: rgb(41, 123, 255);
+}
+
+.btn-blue:disabled {
+  background-color: rgb(117, 170, 255); 
+  color: var(--clr-primary-5);
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .btn-red {
@@ -48,15 +62,8 @@
   background-color: rgb(225, 0, 0);
 }
 
-/* Running Simulations */
-
-.active:hover {
-  background-color: var(--clr-secondary-1);
-  color: var(--clr-primary-5);
-}
-
-.btn:disabled {
-  background-color: var(--clr-secondary-1); 
+.btn-red:disabled {
+  background-color: rgb(255, 24, 24);
   color: var(--clr-primary-5);
   cursor: not-allowed;
   opacity: 0.8;
