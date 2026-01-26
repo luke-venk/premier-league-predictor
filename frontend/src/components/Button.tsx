@@ -4,14 +4,23 @@ import "./Button.css";
 interface Props {
   children: ReactNode;
   onClick?: () => void;
-  className?: string;
   disabled?: boolean;
+  color?: "blue" | "green";
+  size?: "small" | "large";
+  className?: string;
 }
 
-const Button = ({ children, onClick, className, disabled }: Props) => {
+const Button = ({
+  children,
+  onClick,
+  disabled,
+  color = "green",
+  size = "large",
+  className,
+}: Props) => {
   return (
     <button
-      className={className ? `btn ${className}` : "btn"}
+      className={`btn btn-${color} btn-${size} ${className ?? ""}`}
       onClick={onClick}
       disabled={disabled}
     >

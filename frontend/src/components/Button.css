@@ -1,19 +1,46 @@
+/* Base CSS style for all buttons */
 .btn {
-  background-color: var(--clr-secondary-5);
-  color: white;
   border-color: var(--clr-primary-5);
   border-width: 4px;
   border-radius: 999px;
-  padding: 1rem 1rem;
+  
+  color: white;
+  
   cursor: pointer;
-  width: 15rem;
-  font-size: 1.2rem;
   font-family: inherit;
 }
 
-.btn:hover {
+/* Sizes */
+.btn-small {
+  padding: 0.5rem 1rem;
+  width: 10rem;
+  font-size: 1.2rem;
+}
+
+.btn-large {
+  padding: 1rem 1rem;
+  width: 15rem;
+  font-size: 1.2rem;
+}
+
+/* Colors */
+.btn-green {
+  background-color: var(--clr-secondary-5);
+}
+
+.btn-green:hover {
   background-color: var(--clr-secondary-4);
 }
+
+.btn-blue {
+  background-color: rgb(1, 36, 159);
+}
+
+.btn-blue:hover {
+  background-color: rgb(41, 123, 255);
+}
+
+/* Running Simulations */
 
 .active:hover {
   background-color: var(--clr-secondary-1);

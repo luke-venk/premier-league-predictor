@@ -1,0 +1,21 @@
+.simulation-select-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.simulation-select-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.simulation-select-dropdown select {
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #aaa;
+}
