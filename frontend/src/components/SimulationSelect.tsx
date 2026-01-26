@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import type { Simulation } from "../types/simulation";
+import { useSimulations } from "../state/simulations";
 import Button from "./Button";
 import "./SimulationSelect.css";
 
 const SimulationSelect = () => {
-  const [simulations, setSimulations] = useState<Simulation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { simulations, loading, error } = useSimulations();
 
   // Allow the user to specify simulation IDs via search params.
   // selectedSimId is derived from the URL.
@@ -33,26 +31,6 @@ const SimulationSelect = () => {
     next.set("simulation", String(draftSimId));
     setSearchParams(next);
   };
-
-  // Load the list of simulations from the /simulations endpoint.
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch("/api/simulations");
-        if (!res.ok) {
-          throw new Error("Failed to fetch simulations");
-        } else {
-          const data = await res.json();
-          setSimulations(data);
-        }
-      } catch (e: any) {
-        setError(e.message ?? "Unknown error.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
 
   if (loading) {
     return <div>Loading simulations...</div>;
