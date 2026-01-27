@@ -1,3 +1,12 @@
+-- init_schema.sql
+--
+-- Initializes the PostgreSQL schema for this application.
+-- Creates tables for simulations, match predictions, and table standings.
+--
+-- Intended to be run once, when setting up a new database.
+-- Can be executed again through `db/clean_db.sh` if a fresh
+-- database is desired.
+
 BEGIN;
 
 CREATE TABLE simulation (
