@@ -1,20 +1,76 @@
 .standings-row {
+  /* Allow the color indicating competition to be clipped by pill's
+  border radius. */
+  --stripe-w: 4rem;
+
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 3px solid var(--clr-ternary-4);
+  background-color: var(--clr-ternary-3);
+  box-sizing: border-box;
+
   /* Same as .table-grid in TablePage.css */
   display: grid;
   /* | Pos | Logo Team Name        | P | W | D | L | Pts | */
   grid-template-columns:
-    3ch /* position */
+    var(--stripe-w) /* position */
+    /* 3ch position */
     minmax(220px, 1fr) /* team logo + name */
     repeat(4, 4ch) /* played, won, drew, lost */
     5ch; /* points */
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  box-sizing: border-box;
   
-  background-color: var(--clr-ternary-3);
-  border: 3px solid var(--clr-ternary-4);
-  border-radius: 999px;
+  align-items: center;
+  
+  /* Remove gap so stripe touches the interior and use padding. */
+  gap: 0;
+  padding: 1rem 1.25rem;
+  padding-left: 0;
+}
+
+/* The colored left cap. */
+.standings-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--stripe-w);
+  background: transparent;
+}
+
+/* Color schemes indicating Champions League and Europa League */
+.standings-row.champions-league::before {
+  background: rgb(16, 45, 230);
+}
+
+.standings-row.champions-league .position {
+  color: white;
+}
+
+.standings-row.europa-league::before {
+  background: rgb(255, 105, 0);
+}
+
+.standings-row.europa-league .position {
+  color: black;
+}
+
+.standings-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Components of Table card. */
+.position {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  align-self: stretch;
+
+  font-weight: 700;
+  line-height: 1;
 }
 
 .standings-cell {
@@ -22,17 +78,14 @@
   justify-self: center;
 }
 
-.position {
-  font-weight: 700;
-}
-
 .team-cell {
+  padding-left: 1.25rem;
   display: flex;
   align-items: center;
-  margin-left: 5rem;
 }
 
 .team-cell img {
+  display: block;
   width: 3rem;
   height: auto;
   margin-right: 1rem;

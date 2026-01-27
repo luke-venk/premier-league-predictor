@@ -10,8 +10,15 @@ const TableCard = ({ standing }: Props) => {
   const team = teams[standing.teamId].name;
   const logo = teams[standing.teamId].logo;
 
+  const competition =
+    standing.position <= 4
+      ? "champions-league"
+      : standing.position == 5
+        ? "europa-league"
+        : "";
+
   return (
-    <div className="standings-row">
+    <div className={`standings-row ${competition}`}>
       <div className="standings-cell position">{standing.position}</div>
       <div className="team-cell">
         <img src={`/logos/${logo}`} alt={`${team} logo`}></img>
