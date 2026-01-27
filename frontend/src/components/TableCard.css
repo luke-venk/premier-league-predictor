@@ -1,39 +1,38 @@
 .standings-row {
-  /* Allow the color indicating competition to be clipped by pill's
-  border radius. */
   --stripe-w: 4rem;
 
   position: relative;
   overflow: hidden;
+  width: 100%;
+
   border-radius: 999px;
   border: 3px solid var(--clr-ternary-4);
   background-color: var(--clr-ternary-3);
   box-sizing: border-box;
 
-  /* Same as .table-grid in TablePage.css */
   display: grid;
-  /* | Pos | Logo Team Name        | P | W | D | L | Pts | */
   grid-template-columns:
     var(--stripe-w) /* position */
     minmax(220px, 1fr) /* team logo + name */
     repeat(4, 4ch) /* played, won, drew, lost */
     5ch; /* points */
-  
+
   align-items: center;
-  
-  /* Remove gap so stripe touches the interior and use padding. */
-  gap: 0.75rem;
   padding: 1rem 1.25rem;
   padding-left: 0;
+
+  column-gap: 0.75rem;
 }
 
 /* The colored left cap. */
 .standings-row::before {
   content: "";
   position: absolute;
+
   left: 0;
   top: 0;
   bottom: 0;
+
   width: var(--stripe-w);
   background: transparent;
 }
@@ -55,30 +54,30 @@
   background: rgb(255, 40, 130);
 }
 
+/* Keep content above stripe */
 .standings-row > * {
   position: relative;
   z-index: 1;
 }
 
-/* Components of Table card. */
+/* Position number centered inside the stripe column. */
 .position {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  align-self: stretch;
-
+  
+  height: 100%;
   font-weight: 700;
   line-height: 1;
 }
 
+/* Components of Table card. */
 .standings-cell {
   font-size: 1rem;
   justify-self: center;
 }
 
 .team-cell {
-  padding-left: 1.25rem;
   display: flex;
   align-items: center;
 }

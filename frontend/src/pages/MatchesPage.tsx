@@ -18,7 +18,7 @@ const MatchesPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const url = simId ? `/api/matches?simulation=${simId}` : "/api/matches"
+        const url = simId ? `/api/matches?simulation=${simId}` : "/api/matches";
         const res = await fetch(url);
         if (!res.ok) {
           throw new Error("Failed to fetch matches.");
@@ -35,43 +35,41 @@ const MatchesPage = () => {
     load();
   }, [simId]);
 
-  if (loading) {
-    return <div>Loading match predictions...</div>;
-  } else if (error) {
-    return <div>Error: {error}</div>;
-  } else {
-    if (!matches.length) {
-      return (
-        <div className="matches-page empty">
-          <h1>Match Predictions</h1>
+  return (
+    <div className="matches-page">
+      <h1>Match Predictions</h1>
+      <SimulationSelect />
+
+      <div className="match-header">
+        <div className="match-header-cell date">Date</div>
+        <div className="match-header-cell prediction">Prediction</div>
+        <div className="match-header-cell correct">Correct?</div>
+      </div>
+
+      {loading && <div className="status">Loading match predictions...</div>}
+      {error && <div className="status error">Error: {error}</div>}
+
+      {!matches.length ? (
+        <div className="empty">
           <p>
-            No simulation results. Please select a valid simulation from the {" "}
+            No simulation results. Please select a valid simulation from the{" "}
             <Link to="/">Home Page</Link>.
           </p>
-          
-        </div>    
-      )
-    }
-
-    return (
-      <div className="matches-page">
-        <h1>Match Predictions</h1>
-        <SimulationSelect />
-        <div className="match-header">
-          <div className="match-header-cell date">Date</div>
-          <div className="match-header-cell prediction">Prediction</div>
-          <div className="match-header-cell correct">Correct?</div>
         </div>
-
-        {matches.map((match) => {
-          return <MatchCard 
-            key={`${match.matchDate}-${match.homeId}-${match.awayId}`}
-            match={match}
-          />;
-        })}
-      </div>
-    );
-  }
+      ) : (
+        <div className="matches-list">
+          {matches.map((match) => {
+            return (
+              <MatchCard
+                key={`${match.matchDate}-${match.homeId}-${match.awayId}`}
+                match={match}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default MatchesPage;

@@ -17,7 +17,7 @@ const TablePage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const url = simId ? `/api/table?simulation=${simId}` : "/api/table"
+        const url = simId ? `/api/table?simulation=${simId}` : "/api/table";
         const res = await fetch(url);
         if (!res.ok) {
           throw new Error("Failed to fetch table.");
@@ -26,35 +26,19 @@ const TablePage = () => {
           setStandings(data);
         }
       } catch (e: any) {
-        setError(e.message ?? "Unknown error.")
+        setError(e.message ?? "Unknown error.");
       } finally {
         setLoading(false);
       }
     };
     load();
   }, [simId]);
-  
-  if (loading) {
-    return <div>Loading table...</div>
-  } else if (error) {
-    return <div>Error: {error}</div>;
-  } else {
-    if (!standings.length) {
-      return (
-        <div className="table-page empty">
-          <h1>Table Predictions</h1>
-          <p>
-            No simulation results. Please select a valid simulation from the {" "}
-            <Link to="/">Home Page</Link>.
-          </p>
-        </div>
-      )
-    }
-  }
+
   return (
     <div className="table-page">
       <h1>Table Predictions</h1>
       <SimulationSelect />
+
       <div className="table-grid table-header">
         <div className="table-header-cell">Pos</div>
         <div className="table-header-cell team">Team</div>
@@ -64,14 +48,24 @@ const TablePage = () => {
         <div className="table-header-cell">L</div>
         <div className="table-header-cell">Pts</div>
       </div>
-      <div className="table-container">
-        {standings.map((standing) => {
-          return <TableCard
-            key={standing.position}
-            standing={standing}
-          />
-        })}
-      </div>
+
+      {loading && <div className="status">Loading match predictions...</div>}
+      {error && <div className="status error">Error: {error}</div>}
+
+      {!standings.length ? (
+        <div className="empty">
+          <p>
+            No simulation results. Please select a valid simulation from the{" "}
+            <Link to="/">Home Page</Link>.
+          </p>
+        </div>
+      ) : (
+        <div className="table-container">
+          {standings.map((standing) => {
+            return <TableCard key={standing.position} standing={standing} />;
+          })}
+        </div>
+      )}
     </div>
   );
 };

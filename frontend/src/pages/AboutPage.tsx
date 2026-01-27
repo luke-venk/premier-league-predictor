@@ -3,9 +3,9 @@ import "./AboutPage.css";
 
 const AboutPage = () => {
   return (
-    <>
-      <h1>About</h1>
-      <InfoCard title="About the Project">
+    <div className="about-page">
+      <h1>About the Project</h1>
+      <InfoCard>
         For our final project for Dr. Bui's machine learning class in the Fall
         of 2025, two colleagues and I decided to create and compare various
         machine learning models to determine which would be the best at
@@ -103,7 +103,7 @@ const AboutPage = () => {
         />
       </div>
       </InfoCard>
-    </>
+    </div>
   );
 };
 

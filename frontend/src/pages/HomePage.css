@@ -1,3 +1,7 @@
+.home-page {
+  padding-bottom: 10rem;
+}
+
 .button-row {
   display: flex;
   justify-self: center;

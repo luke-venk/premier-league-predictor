@@ -55,7 +55,7 @@ const HomePage = () => {
   };
 
   return (
-    <>
+    <div className="home-page">
       <h1>Welcome to Premier League Predictor!</h1>
       <InfoCard title="About the Project">
         Soccer is the world's game, and the English Premier League is its
@@ -71,8 +71,8 @@ const HomePage = () => {
         <Link to="/about">About page</Link>.
       </InfoCard>
       <InfoCard title="Choose Simulation">
-        The user can run as many simulations as they'd like, and they can explore
-        the results of any simulation they have run in the {" "}
+        The user can run as many simulations as they'd like, and they can
+        explore the results of any simulation they have run in the{" "}
         <Link to={`/matches${suffix}`}>Matches page</Link> and{" "}
         <Link to={`/table${suffix}`}>Table page</Link>.
       </InfoCard>
@@ -98,7 +98,7 @@ const HomePage = () => {
           Clear All Simulations
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
