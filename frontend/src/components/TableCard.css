@@ -15,7 +15,6 @@
   /* | Pos | Logo Team Name        | P | W | D | L | Pts | */
   grid-template-columns:
     var(--stripe-w) /* position */
-    /* 3ch position */
     minmax(220px, 1fr) /* team logo + name */
     repeat(4, 4ch) /* played, won, drew, lost */
     5ch; /* points */
@@ -23,7 +22,7 @@
   align-items: center;
   
   /* Remove gap so stripe touches the interior and use padding. */
-  gap: 0;
+  gap: 0.75rem;
   padding: 1rem 1.25rem;
   padding-left: 0;
 }
@@ -39,7 +38,7 @@
   background: transparent;
 }
 
-/* Color schemes indicating Champions League and Europa League */
+/* Color schemes indicating Champions League, Europa League, and relegation. */
 .standings-row.champions-league::before {
   background: rgb(16, 45, 230);
 }
@@ -52,8 +51,8 @@
   background: rgb(255, 105, 0);
 }
 
-.standings-row.europa-league .position {
-  color: black;
+.standings-row.relegation::before {
+  background: rgb(255, 40, 130);
 }
 
 .standings-row > * {

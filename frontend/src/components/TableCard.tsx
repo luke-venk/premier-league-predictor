@@ -15,8 +15,10 @@ const TableCard = ({ standing }: Props) => {
       ? "champions-league"
       : standing.position == 5
         ? "europa-league"
-        : "";
-
+        : standing.position >= 18
+          ? "relegation"
+          : "";
+  
   return (
     <div className={`standings-row ${competition}`}>
       <div className="standings-cell position">{standing.position}</div>
