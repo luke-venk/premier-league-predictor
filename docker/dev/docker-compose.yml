@@ -1,0 +1,20 @@
+---
+services:
+  database:
+    image: postgres:18.1
+    ports:
+      # Local PC uses port 55432 instead of the standard 5432 to
+      # avoid local Postgres port conflicts.
+      - 55432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: premier_league
+    
+    # Mount a named volume and run the script to initialize the schema.
+    volumes:
+      - postgres-data:/var/lib/postgresql
+      - ../postgres:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres-data:
