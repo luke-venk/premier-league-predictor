@@ -2,7 +2,8 @@
 services:
   database:
     image: postgres:18.1
-    # In prod, don't expose Postgres at all.
+
+    # Make Postgres URL environment variables.
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -14,18 +15,41 @@ services:
       - ../postgres:/docker-entrypoint-initdb.d
   
   backend:
+    # Make the build context the project root so has access to model/ as well.
     build:
       context: ../../
       dockerfile: backend/Dockerfile
+    
+    # Wait for the database container to spin up for the backend to start.
     depends_on:
       - database
+    
+    # Expose port 8000 to be able to access the FastAPI server.
     ports:
       - 8000:8000
+    
+    # Make Postgres URL an environment variable.
     environment:
       # Format: postgresql://USER:PASSWORD@HOST:PORT/DATABASE
       # Note that for prod, the host is the "database" container.
       DATABASE_URL: postgresql://postgres:postgres@database:5432/premier_league
+    
+    # Start the FastAPI server.
     command: ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  frontend:
+    # The build context can just be the frontend/ directory.
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+    
+    # Wait for the backend to begin before serving the frontend.
+    depends_on:
+      - backend
+    
+    # Expose default HTTP port 80.
+    ports:
+      - 80:80
 
 volumes:
   postgres-data:
