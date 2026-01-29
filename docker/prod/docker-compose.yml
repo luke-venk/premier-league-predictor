@@ -1,0 +1,32 @@
+---
+services:
+  database:
+    image: postgres:18.1
+    # In prod, don't expose Postgres at all.
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: premier_league
+    
+    # Mount a named volume and run the script to initialize the schema.
+    volumes:
+      - postgres-data:/var/lib/postgresql
+      - ../postgres:/docker-entrypoint-initdb.d
+  
+  backend:
+    build:
+      context: ../../
+      dockerfile: backend/Dockerfile
+    depends_on:
+      - database
+    ports:
+      - 8000:8000
+    environment:
+      # Format: postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+      # Note that for prod, the host is the "database" container.
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/premier_league
+    command: ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+volumes:
+  postgres-data:
+...
