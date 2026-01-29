@@ -13,6 +13,19 @@ const SimulationSelect = () => {
   const simParam = searchParams.get("simulation");
   const selectedSimId = simParam ? Number(simParam) : null;
 
+  // If the selectedSimId doesn't exist in the simulations list,
+  // don't display as "Currently Selected".
+  const isValidSelectedSim = selectedSimId != null && simulations.some((sim) => sim.id == selectedSimId);
+
+  // Auto-correct the URL if the simulation is invalid.
+  useEffect(() => {
+    if (selectedSimId !== null && simulations.length > 0 && !simulations.some((sim) => sim.id == selectedSimId)) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("simulation");
+      setSearchParams(next);
+    }
+  }, [simulations, searchParams, setSearchParams, selectedSimId]);
+
   // Dropdown draft selection, although selection only occurs when
   // the button is clicked.
   // draftSimId is derived from local state.
@@ -70,7 +83,7 @@ const SimulationSelect = () => {
 
       <div className="simulation-status">
         <span className="simulation-status-label">Currently Selected: {" "}</span>
-        <span className="simulation-status-text">{selectedSimId ? `Simulation #${selectedSimId}` : "None"}</span>
+        <span className="simulation-status-text">{isValidSelectedSim ? `Simulation #${selectedSimId}` : "None"}</span>
       </div>
     </div>
   );
