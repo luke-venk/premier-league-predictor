@@ -4,8 +4,8 @@ from backend.db.connection import get_connection
 from backend.db.predictions import insert_predictions
 from backend.db.simulations import create_simulation
 from backend.db.standings import insert_standings
-from backend.sim.predictor import Predictor
-from backend.sim.generate_table import compute_standings
+from backend.worker.predictor import Predictor
+from backend.worker.generate_table import compute_standings
 
 
 def _get_job_status(job_id: int) -> str:
