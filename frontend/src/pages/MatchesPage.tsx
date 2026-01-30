@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import type { Match } from "../types/match";
 import MatchCard from "../components/MatchCard";
 import SimulationSelect from "../components/SimulationSelect";
@@ -18,7 +18,7 @@ const MatchesPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const url = simId ? `/api/matches?simulation=${simId}` : "/api/matches";
+        const url = `/api/matches?simulation=${simId}`;
         const res = await fetch(url);
         if (!res.ok) {
           throw new Error("Failed to fetch matches.");
@@ -32,7 +32,11 @@ const MatchesPage = () => {
         setLoading(false);
       }
     };
-    load();
+    if (simId) {
+      load();
+    } else {
+      setLoading(false);
+    }
   }, [simId]);
 
   return (
@@ -51,10 +55,7 @@ const MatchesPage = () => {
 
       {!matches.length ? (
         <div className="empty">
-          <p>
-            No simulation results. Please select a valid simulation from the{" "}
-            <Link to="/">Home Page</Link>.
-          </p>
+          <p>No simulation results. Please select a valid simulation.</p>
         </div>
       ) : (
         <div className="matches-list">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import type { Standing } from "../types/standing";
 import TableCard from "../components/TableCard";
 import SimulationSelect from "../components/SimulationSelect";
@@ -17,7 +17,7 @@ const TablePage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const url = simId ? `/api/table?simulation=${simId}` : "/api/table";
+        const url = `/api/table?simulation=${simId}`;
         const res = await fetch(url);
         if (!res.ok) {
           throw new Error("Failed to fetch table.");
@@ -31,7 +31,11 @@ const TablePage = () => {
         setLoading(false);
       }
     };
-    load();
+    if (simId) {
+      load();
+    } else {
+      setLoading(false);
+    }
   }, [simId]);
 
   return (
@@ -54,10 +58,7 @@ const TablePage = () => {
 
       {!standings.length ? (
         <div className="empty">
-          <p>
-            No simulation results. Please select a valid simulation from the{" "}
-            <Link to="/">Home Page</Link>.
-          </p>
+          <p>No simulation results. Please select a valid simulation.</p>
         </div>
       ) : (
         <div className="table-container">
