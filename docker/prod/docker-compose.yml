@@ -1,14 +1,13 @@
 ---
 services:
+  # Postgres service to provide source of truth database.
   database:
     image: postgres:18.1
-
     # Make Postgres URL environment variables.
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: premier_league
-    
+      POSTGRES_DB: premier_league  
     # Mount a named volume and run the script to initialize the schema.
     volumes:
       - postgres-data:/var/lib/postgresql
@@ -19,37 +18,31 @@ services:
     build:
       context: ../../
       dockerfile: backend/Dockerfile
-    
     # Wait for the database container to spin up for the backend to start.
     depends_on:
       - database
-    
     # Expose port 8000 to be able to access the FastAPI server.
     ports:
       - 8000:8000
-    
     # Make Postgres URL an environment variable.
     environment:
       # Format: postgresql://USER:PASSWORD@HOST:PORT/DATABASE
       # Note that for prod, the host is the "database" container.
       DATABASE_URL: postgresql://postgres:postgres@database:5432/premier_league
-    
-    # Start the FastAPI server.
-    command: ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    # Default command is to start the FastAPI server.
 
   frontend:
     # The build context can just be the frontend/ directory.
     build:
       context: ../../frontend
       dockerfile: Dockerfile
-    
     # Wait for the backend to begin before serving the frontend.
     depends_on:
       - backend
-    
     # Expose default HTTP port 80.
     ports:
       - 80:80
+    # TODO: implement worker
 
 volumes:
   postgres-data:

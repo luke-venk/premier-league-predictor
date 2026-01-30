@@ -42,7 +42,9 @@ def get_standings(conn: psycopg.Connection, simulation_id: int) -> list[Standing
     with the simulation.
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM standing WHERE simulation_id = %s;", (simulation_id, ))
+        cur.execute(
+            "SELECT * FROM standing WHERE simulation_id = %s;", (simulation_id,)
+        )
         out = cur.fetchall()
 
     return out

@@ -3,7 +3,7 @@
 
 #### DEFAULT MAKE COMMANDS #####
 # dev (Postgres container, local frontend + backend)
-dev: db-up
+dev: dev-up
 	@$(MAKE) -j 2 backend-dev frontend-dev
 
 # prod (frontend, backend, database all containerized)
@@ -12,16 +12,17 @@ prod:
 
 
 ##### DEV #####
-# Start the database service (for both dev and prod).
-db-up:
-	docker compose -f docker/dev/docker-compose.yml up -d database
+# Start the database, queue, and worker services before running the
+# frontend and backend locally.
+dev-up:
+	docker compose -f docker/dev/docker-compose.yml up -d --build
 
-# Stop the database service.
-db-down:
+# Stop the dev services.
+dev-down:
 	docker compose -f docker/dev/docker-compose.yml down
 
-# Stop the database and delete the volume mount.
-db-reset:
+# Stop the dev services and delete the volume mount.
+dev-reset:
 	docker compose -f docker/dev/docker-compose.yml down -v
 
 # Start the backend server locally (dev).

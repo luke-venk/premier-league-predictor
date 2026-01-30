@@ -1,0 +1,43 @@
+"""
+Helper function to make creating jobs in PostgreSQL and enqueuing jobs
+into the Redis queue more modular.
+"""
+
+import psycopg
+from redis import Redis
+from typing import Optional
+
+from backend.config import REDIS_URL
+
+def create_job_psql(conn: psycopg.Connection) -> int:
+    """
+    Creates a new job in the Postgres database and returns its job ID.
+    """
+    with conn.cursor() as cur:
+        # The default values are id, job_status, and created_at.
+        cur.execute("INSERT INTO job DEFAULT VALUES RETURNING id;")
+        row = cur.fetchone()
+    
+    conn.commit()
+    return row["id"]
+
+def enqueue_job_hq(job_id: int) -> Optional[str]:
+    """
+    After creating a new job in the Postgres database, enqueue the
+    new job ID into the Redis queue.
+    
+    Returns the error if the operation failed.
+    """
+    try:
+        rd = Redis.from_url(REDIS_URL)
+        # Left push the job ID into Redis, prepending to the queue.
+        rd.lpush("queue", job_id)
+    except Exception as e:
+        return str(e)
+    
+def fail_job_psql(conn: psycopg.Connection, job_id: int, error: str) -> None:
+    """
+    If enqueueing a job failed, update its job status to failed.
+    """
+    with conn.cursor() as cur:
+        cur.execute("UPDATE job SET job_status = 'failed', finished_at = NOW(), error = %s WHERE id = %s;", (error, job_id))

@@ -1,5 +1,6 @@
 ---
 services:
+  # Postgres service to provide source of truth database.
   database:
     image: postgres:18.1
     ports:
@@ -10,12 +11,40 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: premier_league
-    
     # Mount a named volume and run the script to initialize the schema.
     volumes:
       - postgres-data:/var/lib/postgresql
       - ../postgres:/docker-entrypoint-initdb.d
 
+    # Redis service to provide a queue for worker services to consume jobs from.
+  queue:
+    image: redis:8
+    # Backend (localhost) needs to access the queue to enqueue jobs.
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-queue:/data
+    # Default command is to start the Redis server.
+
+  # Worker service to asynchronously run simulations and compute table standings.
+  worker:
+    # Use same Dockerfile as the backend in prod, just run different command.
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+    # The worker needs both the database and the queue up to work.
+    depends_on:
+      - database
+      - queue
+    # Override the default server start command, and run the worker entry loop.
+    command: ["python", "-m", "backend.worker.main"]
+    # Store the Redis URL as an environment variable.
+    environment:
+      REDIS_URL: redis://queue:6379/0
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/premier_league
+
+
 volumes:
   postgres-data:
+  redis-queue:
 ...

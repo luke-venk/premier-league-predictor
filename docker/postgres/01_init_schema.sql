@@ -1,4 +1,4 @@
--- init_schema.sql
+-- 01_init_schema.sql
 --
 -- Initializes the PostgreSQL schema for this application.
 -- Creates tables for simulations, match predictions, and table standings.
