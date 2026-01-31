@@ -3,10 +3,10 @@
 ## Overview
 The backend is built with FastAPI and is responsible for:
 - Serving the REST API
-- Running match prediction and table standing computations
-- Persisting and retrieving data from PostgreSQL using psycopg
+- Orchestrating match prediction and table standing computations
+- Persisting and retrieving data from PostgreSQL using `psycopg`
 
-## Running the Backend
+## Running the Backend Locally
 From the project root, start the development server with:  
 `uvicorn backend.main:app --reload`
 
@@ -19,9 +19,9 @@ Interactive API documentation is available at:
 ## Interacting with the API
 Endpoints can be accessed via HTTP clients such as `curl`:
 
-curl -X <GET|POST|DELETE> http://localhost:8000/<route>
+curl -X <GET|POST|DELETE> http://localhost:8000/api/<route>
 
-Refer to `api/routes.py` for a complete list of available endpoints and request/response schemas.
+Refer to `backend/api/routes.py` for a complete list of available endpoints and request/response schemas.
 
 ## Directory Structure
 - api/       Defines API routes and request/response schemas.
