@@ -6,7 +6,7 @@ from fastapi import APIRouter
 
 from backend.api.schemas import Match, Standing
 from backend.db.connection import get_connection
-from backend.db.simulations import list_simulations, delete_simulations
+from backend.db.simulations import list_simulations, clear_database
 from backend.db.predictions import get_predictions
 from backend.db.standings import get_standings
 from backend.db.jobs import create_job_psql, enqueue_job_hq, fail_job_psql, get_job_info
@@ -71,7 +71,7 @@ def delete_simulations() -> dict:
     """
     try:
         with get_connection() as conn:
-            delete_simulations(conn)
+            clear_database(conn)
             conn.commit()
         return {"ok": True}
     except:

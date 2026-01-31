@@ -39,7 +39,7 @@ def get_simulation(conn: psycopg.Connection, simulation_id: int) -> tuple:
 
     return answer
 
-def delete_simulations(conn: psycopg.Connection) -> None:
+def clear_database(conn: psycopg.Connection) -> None:
     """
     Completely empties the simulation, match, and standing tables. Also
     restarts their auto-incrementing IDs and clears dependent tables.
@@ -47,6 +47,7 @@ def delete_simulations(conn: psycopg.Connection) -> None:
     Returns true if successful.
     """
     with conn.cursor() as cur:
-        cur.execute("""TRUNCATE TABLE simulation, match, standing
+        cur.execute("""TRUNCATE TABLE simulation, match, standing, job
                     RESTART IDENTITY
                     CASCADE;""")
+        conn.commit()
