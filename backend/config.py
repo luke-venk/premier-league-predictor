@@ -4,12 +4,23 @@ Configuration parameters for the project.
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from enum import StrEnum
 
+# Load environment variables from the .env file.
 load_dotenv()
-# Use .env to load the URL pointing to the PostgreSQL database.
+
+# Environment variable for the URL pointing to the PostgreSQL database.
 DATABASE_URL = os.environ["DATABASE_URL"]
-# Use .env to loda the URL pointing to the Redis queue.
+
+# Environment variable for the URL pointing to the Redis queue.
 REDIS_URL = os.environ["REDIS_URL"]
+
+# Enum to avoid mistyping job statuses.
+class JobStatus(StrEnum):
+    QUEUED = "queued"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
 
 # The path to the project root.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

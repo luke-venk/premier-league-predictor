@@ -1,11 +1,10 @@
-from datetime import datetime, timezone
-
 from backend.db.connection import get_connection
 from backend.db.predictions import insert_predictions
 from backend.db.simulations import create_simulation
 from backend.db.standings import insert_standings
 from backend.worker.predictor import Predictor
 from backend.worker.generate_table import compute_standings
+from backend.config import JobStatus
 
 
 def _get_job_status(job_id: int) -> str:
@@ -32,14 +31,14 @@ def _update_job(job_id: int, status: str) -> None:
         with conn.cursor() as cur:
             # Update the job status and timestamp.
             # Note that the column name will differ based on the new job status.
-            if status == "running":
+            if status == JobStatus.RUNNING:
                 cur.execute(
                     """UPDATE job
                     SET job_status = 'running', started_at = NOW()
                     WHERE id = %s""",
                     (job_id,),
                 )
-            elif status == "completed":
+            elif status == JobStatus.COMPLETED:
                 cur.execute(
                     """UPDATE job
                     SET job_status = 'completed', finished_at = NOW()
@@ -60,8 +59,8 @@ def start_job(job_id: int) -> None:
     """
     # A job that was not previously in the 'queued' status cannot
     # now become 'running'.
-    if _get_job_status(job_id) == "queued":
-        return _update_job(job_id, "running")
+    if _get_job_status(job_id) == JobStatus.QUEUED:
+        return _update_job(job_id, JobStatus.RUNNING)
 
 
 def do_job(job_id: int) -> None:
@@ -103,5 +102,5 @@ def finish_job(job_id: int) -> None:
     """
     # A job that was not previously in the 'running' status cannot
     # now become 'completed'.
-    if _get_job_status(job_id) == "running":
-        return _update_job(job_id, "completed")
+    if _get_job_status(job_id) == JobStatus.RUNNING:
+        return _update_job(job_id, JobStatus.COMPLETED)
