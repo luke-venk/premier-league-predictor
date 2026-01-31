@@ -5,6 +5,7 @@ import InfoCard from "../components/InfoCard";
 import Button from "../components/Button";
 import SimulationSelect from "../components/SimulationSelect";
 import "./HomePage.css";
+import { toast } from "react-toastify";
 
 const HomePage = () => {
   const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
@@ -39,6 +40,7 @@ const HomePage = () => {
     } else {
       const data = await res.json();
       setCurrentJobId(data.jobId);
+      toast.info(`Simulation #${data.jobId} began`);
     }
   };
 
@@ -58,15 +60,17 @@ const HomePage = () => {
             if (data.jobStatus == "completed") {
               // If the job is complete, refresh the simulation store.
               await refresh();
-              // Set the current job as null.
-              setCurrentJobId(null);
               // Update the search parameter to autopopulate the simulation
               // select with the finished simulation.
               const next = new URLSearchParams(searchParams);
               next.set("simulation", String(data.simulationId));
               setSearchParams(next);
+              // Set the current job as null.
+              toast.success(`Simulation #${currentJobId} complete!`);
+              setCurrentJobId(null);
             } else if (data.jobStatus == "failed") {
               // If the job failed, just set the current job as null.
+              toast.error(`Simulation #${currentJobId} failed...`);
               setCurrentJobId(null);
             }
           }
@@ -98,6 +102,9 @@ const HomePage = () => {
 
       // Refresh simulation select.
       await refresh();
+
+      // Inform the user the data has been cleared.
+      toast.info("All simulations have been deleted")
     }
   };
 
