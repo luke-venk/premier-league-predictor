@@ -8,31 +8,17 @@ import "./HomePage.css";
 import { toast } from "react-toastify";
 
 const HomePage = () => {
-  const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
-  const { refresh } = useSimulations();
-
+  // URL search parameters for the specific simulation.
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.toString();
   const suffix = search ? `?${search}` : "";
+  
+  // Function to update the simulation store.
+  const { refresh } = useSimulations();
 
   const [currentJobId, setCurrentJobId] = useState<number | null>(null);
 
-  // If the simulation button is clicked, disable the button
-  // until the backend provides a response.
-  const handleRunSimulation = async () => {
-    if (runningSimulation) return;
-    setRunningSimulation(true);
-    try {
-      await runSimulation();
-      // Update the SimulationSelect dropdowns everywhere once
-      // the simulation is done running.
-      await refresh();
-    } finally {
-      setRunningSimulation(false);
-    }
-  };
-
-  // Run the simulation and update the timestamp on the home page.
+  // Begin the simulation by enqueuing the job.
   const runSimulation = async () => {
     const res = await fetch("/api/simulate", { method: "POST" });
     if (!res.ok) {
@@ -135,17 +121,15 @@ const HomePage = () => {
 
       <div className="button-row">
         <Button
-          onClick={handleRunSimulation}
-          disabled={runningSimulation}
+          onClick={runSimulation}
           color="green"
           size="large"
         >
-          {runningSimulation ? "Running Simulation..." : "Run New Simulation"}
+          Run New Simulation
         </Button>
 
         <Button
           onClick={handleClearSimulations}
-          disabled={runningSimulation}
           color="red"
           size="large"
         >

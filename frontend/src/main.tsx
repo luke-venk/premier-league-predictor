@@ -17,7 +17,6 @@ createRoot(document.getElementById("root")!).render(
         closeOnClick
         pauseOnHover={false}
         draggable={false}
-        
       />
       <App />
     </SimulationProvider>
