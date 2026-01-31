@@ -54,14 +54,21 @@ const HomePage = () => {
           throw new Error(`HTTP ${res.status}`);
         } else {
           const data = await res.json();
-          // If the job is complete, refresh the simulation store and set the
-          // current job as null. If the job failed, just set the current job
-          // as null.
-          if (data.jobStatus == "completed") {
-            await refresh();
-            setCurrentJobId(null);
-          } else if (data.jobStatus == "failed") {
-            setCurrentJobId(null);
+          if (data.ok) {
+            if (data.jobStatus == "completed") {
+              // If the job is complete, refresh the simulation store.
+              await refresh();
+              // Set the current job as null.
+              setCurrentJobId(null);
+              // Update the search parameter to autopopulate the simulation
+              // select with the finished simulation.
+              const next = new URLSearchParams(searchParams);
+              next.set("simulation", String(data.simulationId));
+              setSearchParams(next);
+            } else if (data.jobStatus == "failed") {
+              // If the job failed, just set the current job as null.
+              setCurrentJobId(null);
+            }
           }
         }
       } catch (e) {

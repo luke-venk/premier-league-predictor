@@ -51,7 +51,7 @@ def fail_job_psql(conn: psycopg.Connection, job_id: int, error: str) -> None:
     conn.commit()
 
 
-def get_job_info(conn: psycopg.Connection, job_id: int) -> tuple[str, int]:
+def get_job_info(conn: psycopg.Connection, job_id: int) -> tuple[str, int | None]:
     """
     Given a specific job ID, returns the job's status and its corresponding
     simulation ID upon completion. This will be used to check if the job has
@@ -59,8 +59,10 @@ def get_job_info(conn: psycopg.Connection, job_id: int) -> tuple[str, int]:
     failing, as well as to autopopulate the simulation select.
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT job_status FROM job WHERE id = %s;", (job_id,))
+        cur.execute("SELECT job_status, simulation_id FROM job WHERE id = %s;", (job_id,))
         row = cur.fetchone()
     
-    sim_id = row["simulation_id"] if row["job_status"] in ["complete", "failed"] else "N/A"
-    return row["job_status"], sim_id
+    if row is None:
+        return "failed", None
+    
+    return row["job_status"], row["simulation_id"]
