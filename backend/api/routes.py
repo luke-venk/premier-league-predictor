@@ -9,17 +9,19 @@ from backend.db.connection import get_connection
 from backend.db.simulations import list_simulations, delete_simulations
 from backend.db.predictions import get_predictions
 from backend.db.standings import get_standings
-from backend.db.enqueue import create_job_psql, enqueue_job_hq, fail_job_psql
+from backend.db.jobs import create_job_psql, enqueue_job_hq, fail_job_psql, get_job_info
 
 router = APIRouter()
 
 
 @router.post("/simulate")
-def simulate() -> dict:
+def run_simulation() -> dict:
     """
     Create a job in the job database in Postgres and enqueue a job
     in the Redis queue for workers to perform simulations and compute
     table standings.
+    
+    Returns a success indicator as well as the new job ID is successful.
     """
     # Create a job in the Postgres database.
     with get_connection() as conn:
@@ -34,7 +36,7 @@ def simulate() -> dict:
             fail_job_psql(conn, job_id, error)
         return {"ok": False}
     else:
-        return {"ok": True}
+        return {"ok": True, "jobId": job_id}
 
 
 @router.get("/simulations")
@@ -63,7 +65,7 @@ def get_latest_simulation_id() -> int:
 
 
 @router.delete("/simulations")
-def clear_data() -> dict:
+def delete_simulations() -> dict:
     """
     Deletes all data in the simulation, match, and standing tables.
     """
@@ -97,3 +99,17 @@ def get_table(simulation: int = 0):
     # If simulation ID is -1, there are no entries in the database.
     with get_connection() as conn:
         return get_standings(conn, simulation_id) if simulation_id != -1 else []
+
+@router.get("/jobs", response_model=dict)
+def get_job(job_id: int):
+    """
+    Returns information related to the job corresponding with the provied job ID.
+    This will be used for polling the status of a job, in order to update
+    the simulation store upon completion.
+    """
+    try:
+        with get_connection() as conn:
+            job_status, sim_id = get_job_info(conn, job_id)
+        return {"ok": True, "jobStatus": job_status, "simulationId": sim_id}
+    except:
+        return {"ok": False}

@@ -27,9 +27,6 @@ def _update_job(job_id: int, status: str) -> None:
     to the given job ID. Also updates the corresponding timestamp for the job
     with the current time.
     """
-    # Get the current timestamp to update the job entry.
-    timestamp = datetime.now(timezone.utc)
-
     # Connect to PostgreSQL database via psycopg connection.
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -38,16 +35,16 @@ def _update_job(job_id: int, status: str) -> None:
             if status == "running":
                 cur.execute(
                     """UPDATE job
-                    SET job_status = 'running', started_at = %s
+                    SET job_status = 'running', started_at = NOW()
                     WHERE id = %s""",
-                    (timestamp, job_id),
+                    (job_id,),
                 )
             elif status == "completed":
                 cur.execute(
                     """UPDATE job
-                    SET job_status = 'completed', finished_at = %s
+                    SET job_status = 'completed', finished_at = NOW()
                     WHERE id = %s""",
-                    (timestamp, job_id),
+                    (job_id,),
                 )
             else:
                 # If a job is being updated to something other than "running",
@@ -97,6 +94,7 @@ def do_job(job_id: int) -> None:
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("UPDATE job SET error = %s WHERE id = %s;", (str(e), job_id))
+            conn.commit()
 
 
 def finish_job(job_id: int) -> None:
