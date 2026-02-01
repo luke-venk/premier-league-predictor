@@ -12,11 +12,12 @@ const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.toString();
   const suffix = search ? `?${search}` : "";
-  
+
   // Function to update the simulation store.
   const { refresh } = useSimulations();
 
-  const [currentJobId, setCurrentJobId] = useState<number | null>(null);
+  // Store queue of all currently running job IDs.
+  const [activeJobIds, setActiveJobIds] = useState<number[]>([]);
 
   // Begin the simulation by enqueuing the job.
   const runSimulation = async () => {
@@ -25,54 +26,72 @@ const HomePage = () => {
       throw new Error(`HTTP ${res.status}`);
     } else {
       const data = await res.json();
-      setCurrentJobId(data.jobId);
+      setActiveJobIds((ids) => (ids.includes(data.jobId) ? ids : [...ids, data.jobId]));
       toast.info(`Simulation #${data.jobId} began`);
     }
   };
 
-  // If a running job is complete, update the simulation store and
-  // clear the current job ID.
+  // Poll all active jobs to check if they are complete. Upon each job
+  // completion, update the simulation store.
   useEffect(() => {
-    // This poll and update should only run if a job is actually running.
-    if (currentJobId === null) return;
-    const pollAndUpdate = async () => {
-      try {
-        const res = await fetch(`/api/jobs?job_id=${currentJobId}`);
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        } else {
-          const data = await res.json();
-          if (data.ok) {
-            if (data.jobStatus == "completed") {
-              // If the job is complete, refresh the simulation store.
-              await refresh();
-              // Update the search parameter to autopopulate the simulation
-              // select with the finished simulation.
-              const next = new URLSearchParams(searchParams);
-              next.set("simulation", String(data.simulationId));
-              setSearchParams(next);
-              // Set the current job as null.
-              toast.success(`Simulation #${currentJobId} complete!`);
-              setCurrentJobId(null);
-            } else if (data.jobStatus == "failed") {
-              // If the job failed, just set the current job as null.
-              toast.error(`Simulation #${currentJobId} failed...`);
-              setCurrentJobId(null);
-            }
+    // This poll and update should only run there are any active jobs.
+    if (activeJobIds.length === 0) return;
+
+    // Every second, poll each running job in parallel.
+    const interval = setInterval(() => {
+      (async () => {
+        try {
+          // (1) Store results of each poll.
+          const results = await Promise.all(
+            activeJobIds.map(async (id) => {
+              const response = await fetch(`/api/jobs?job_id=${id}`);
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);    
+              } else {
+                return {id: id, data: await response.json()};
+              }
+            })
+          );
+
+          // (2) Determine all completed and failed jobs in the last tick.
+          const completedJobs = results.filter((r) => r.data?.jobStatus == "completed");
+          const failedJobs = results.filter((r) => r.data?.jobStatus == "failed");
+
+          // (3) Side effects: refreshing simulation store, toast notifications, etc.
+          if (completedJobs.length > 0) {
+            // Refresh the simulation store.
+            await refresh();
+            
+            // Update the search parameter with the latest simulation completed in the previous tick.
+            const simId = completedJobs[completedJobs.length - 1].data.simulationId;
+            const next = new URLSearchParams(searchParams);
+            next.set("simulation", String(simId));
+            setSearchParams(next);
+            
+            // Toast notification.
+            toast.success(`Simulation #${simId} complete!`);
           }
+
+          for (const r of failedJobs) {
+            // Toast notification.
+            toast.error(`Simulation #${r.id} failed...`);
+          }
+
+          // (4) Remove finished jobs from list.
+          const finishedIds = new Set<number>([
+            ...completedJobs.map((r) => r.id),
+            ...failedJobs.map((r) => r.id)
+          ]);
+          setActiveJobIds((ids) => ids.filter((id) => !finishedIds.has(id)));
+        } catch (e) {
+          console.log("Polling failed: ", e)
         }
-      } catch (e) {
-        console.log("Polling error:", e);
-      }
-    };
-    // Every 1 second, run the pollAndUpdate() function to update the
-    // simulation select.
-    pollAndUpdate();
-    // Set up the interval for subsequent polls.
-    const intervalId = setInterval(pollAndUpdate, 1000);
+      })();
+    }, 1000);
+    
     // Cleanup function to clear the interval when the component unmounts.
-    return () => clearInterval(intervalId);
-  }, [refresh, currentJobId]);
+    return () => clearInterval(interval);
+  }, [activeJobIds, searchParams, setSearchParams, refresh, toast]);
 
   // Allow the user to clear all the simulations they have run.
   const handleClearSimulations = async () => {
@@ -90,7 +109,7 @@ const HomePage = () => {
       await refresh();
 
       // Inform the user the data has been cleared.
-      toast.info("All simulations have been deleted")
+      toast.info("All simulations have been deleted");
     }
   };
 
@@ -120,19 +139,11 @@ const HomePage = () => {
       <SimulationSelect />
 
       <div className="button-row">
-        <Button
-          onClick={runSimulation}
-          color="green"
-          size="large"
-        >
+        <Button onClick={runSimulation} color="green" size="large">
           Run New Simulation
         </Button>
 
-        <Button
-          onClick={handleClearSimulations}
-          color="red"
-          size="large"
-        >
+        <Button onClick={handleClearSimulations} color="red" size="large">
           Clear All Simulations
         </Button>
       </div>
