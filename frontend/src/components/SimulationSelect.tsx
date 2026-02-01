@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useSimulations } from "../state/simulations";
+import { useSimulations } from "../state/SimulationProvider";
 import Button from "./Button";
 import "./SimulationSelect.css";
 

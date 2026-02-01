@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import type { Simulation } from "../types/simulation";
+import { toast } from "react-toastify";
 
 // Define what lives inside the context for TypeScript.
 type SimulationsContextValue = {
@@ -14,6 +15,7 @@ type SimulationsContextValue = {
   loading: boolean;
   error: string | null;
   refresh: () => Promise<Simulation[]>;
+  clearData: () => Promise<void>;
   setSimulations: React.Dispatch<React.SetStateAction<Simulation[]>>;
 };
 
@@ -25,8 +27,7 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Refreshing should reload the list of simulations from the
-  // /simulations endpoint.
+  // Function to reload the list of simulations from the /simulations endpoint.
   const refresh = useCallback(async () => {
     setError(null);
     setLoading(true);
@@ -48,6 +49,22 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
+  // Function to delete all simulations and corresponding tables in the database.
+  const clearData = useCallback(async () => {
+    // Clear simulations from database.
+    const res = await fetch("/api/simulations", { method: "DELETE" });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    } else {
+
+      // Refresh simulation select.
+      await refresh();
+
+      // Inform the user the data has been cleared.
+      toast.info("All simulations have been deleted");
+    }
+  }, [refresh]);
+
   // Initial load once for the app.
   useEffect(() => {
     refresh();
@@ -55,8 +72,8 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
 
   // Only recreate this object if its contents actually change.
   const value = useMemo(
-    () => ({ simulations, loading, error, refresh, setSimulations }),
-    [simulations, loading, error, refresh]
+    () => ({ simulations, loading, error, refresh, clearData, setSimulations }),
+    [simulations, loading, error, refresh, clearData]
   );
 
   return <SimulationsContext.Provider value={value}>{children}</SimulationsContext.Provider>;
