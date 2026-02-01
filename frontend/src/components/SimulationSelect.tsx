@@ -45,12 +45,6 @@ const SimulationSelect = () => {
     setSearchParams(next);
   };
 
-  if (loading) {
-    return <div>Loading simulations...</div>;
-  } else if (error) {
-    return <div>Error: {error}</div>
-  }
-
   return (
     <div className="simulation-select">
       <div className="simulation-select-container">
@@ -61,7 +55,7 @@ const SimulationSelect = () => {
             value={draftSimId}
             onChange={(e) => setDraftSimId(e.target.value === "" ? "" : Number(e.target.value))}
           >
-            <option value="">Select a simulation...</option>
+            <option value="">{loading ? "Loading simulations..." : error ? "Error" : "Select a simulation..."}</option>
             {simulations.map((simulation) => (
               <option key={simulation.id} value={simulation.id}>
                 Simulation #{simulation.id} -{" "}
