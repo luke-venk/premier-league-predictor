@@ -13,6 +13,26 @@ services:
       - postgres-data:/var/lib/postgresql
       - ../postgres:/docker-entrypoint-initdb.d
   
+  # Redis service to provide a queue from which workers consume jobs.
+  queue:
+    image: redis:8
+    volumes:
+      - redis-queue:/data
+
+  # Worker service to asynchronously run simulations and compute table standings.
+  worker:
+    # Use same Dockerfile as backend, just running a different command.
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+    depends_on:
+      - database
+      - queue
+    command: ["python", "-m", "backend.worker.main"]
+    environment:
+      REDIS_URL: redis://queue:6379/0
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/premier_league
+    
   backend:
     # Make the build context the project root so has access to model/ as well.
     build:
@@ -21,6 +41,7 @@ services:
     # Wait for the database container to spin up for the backend to start.
     depends_on:
       - database
+      - queue
     # Expose port 8000 to be able to access the FastAPI server.
     ports:
       - 8000:8000
@@ -29,6 +50,7 @@ services:
       # Format: postgresql://USER:PASSWORD@HOST:PORT/DATABASE
       # Note that for prod, the host is the "database" container.
       DATABASE_URL: postgresql://postgres:postgres@database:5432/premier_league
+      REDIS_URL: redis://queue:6379/0
     # Default command is to start the FastAPI server.
 
   frontend:
@@ -42,8 +64,8 @@ services:
     # Expose default HTTP port 80.
     ports:
       - 80:80
-    # TODO: implement worker
 
 volumes:
   postgres-data:
+  redis-queue:
 ...

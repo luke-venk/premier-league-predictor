@@ -16,7 +16,7 @@ services:
       - postgres-data:/var/lib/postgresql
       - ../postgres:/docker-entrypoint-initdb.d
 
-    # Redis service to provide a queue for worker services to consume jobs from.
+  # Redis service to provide a queue from which workers consume jobs.
   queue:
     image: redis:8
     # Backend (localhost) needs to access the queue to enqueue jobs.
