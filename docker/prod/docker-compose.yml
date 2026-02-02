@@ -11,7 +11,7 @@ services:
     # Mount a named volume and run the script to initialize the schema.
     volumes:
       - postgres-data:/var/lib/postgresql
-      - ../postgres:/docker-entrypoint-initdb.d
+      - ../../db:/docker-entrypoint-initdb.d
   
   # Redis service to provide a queue from which workers consume jobs.
   queue:
