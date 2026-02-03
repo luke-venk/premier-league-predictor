@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: pl-predictor
+    component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pl-predictor
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: pl-predictor
+        component: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: pl-predictor-frontend:dev
+          imagePullPolicy: IfNotPresent
+          # Expose port 80 since nginx will serve the static files.
+          ports:
+            - name: http
+              containerPort: 80
+...

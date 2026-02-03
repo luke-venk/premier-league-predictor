@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: pl-predictor
+    component: worker
+spec:
+  # Have the ability to scale.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pl-predictor
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: pl-predictor
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: pl-predictor-backend:dev
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "backend.worker.main"]
+          env:
+            - name: REDIS_URL
+              value: redis://queue:6379/0
+            - name: DATABASE_URL
+              value: postgresql://postgres:postgres@database:5432/premier_league
+...

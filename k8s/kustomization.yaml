@@ -1,0 +1,7 @@
+resources:
+  - database
+  - queue
+  - worker
+  - backend
+  - frontend
+  - ingress

@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue
+  labels:
+    app: pl-predictor
+    component: queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pl-predictor
+      component: queue
+  template:
+    metadata:
+      labels:
+        app: pl-predictor
+        component: queue
+    spec:
+      containers:
+        - name: queue
+          image: redis:8
+          ports:
+            - name: redis
+              containerPort: 6379
+...

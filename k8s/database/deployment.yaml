@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  labels:
+    app: pl-predictor
+    component: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pl-predictor
+      component: database
+  template:
+    metadata:
+      labels:
+        app: pl-predictor
+        component: database
+    spec:
+      containers:
+        - name: database
+          image: postgres:18.1
+          ports:
+            - name: postgres
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: premier_league
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql
+            - name: db-init
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: database-pvc
+        - name: db-init
+          configMap:
+            name: database-init
+...
