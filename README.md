@@ -7,7 +7,8 @@ Football is the world's sport, and the English Premier League is the most watche
 
 The system is designed as a distributed architecture featuring asynchronous workers, a Redis-backed job queue, and container orchestration via Kubernetes.
 
-TODO: link to demonstration video  
+### Demo Video
+A 3 minute demonstration video for this project can be found [here](https://www.youtube.com/watch?v=schW2kduaRI).
 
 ### Features
 Here is the summary of the features found in this project:  
