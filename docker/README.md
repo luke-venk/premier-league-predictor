@@ -16,8 +16,19 @@ Development mode is intended for local development and debugging. In this mode, 
 | Worker | |
 
 ### Usage
-To spin up the application in *dev* mode, run the following command:  
-`make dev-up` or `make` (default Makefile command)  
+To install dependencies and spin up the application in *dev* mode, run the following commands:  
+```bash
+# Create virtual environment and install dependencies for backend.
+python3 -m venv backend/venv
+source backend/venv/bin/activate
+pip install -r backend/requirements.txt
+
+# Install dependencies for frontend.
+npm install
+
+# Run the application in development mode.
+make dev
+```
 
 To bring down the application in *dev* mode, stop the application (^C), and run the following command:  
 `make dev-down`  

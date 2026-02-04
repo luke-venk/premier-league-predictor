@@ -1,9 +1,7 @@
 # Kubernetes
 
 ## Overview
-Kubernetes is used in this project to orchestrate my containerized application across distributed infrastructure and keep the software running.  
-
-k3d is used to run lightweight Kubernetes inside my Docker containers.
+Kubernetes is used in this project to orchestrate my containerized application across distributed infrastructure and keep the software running. Specifically, k3d is used to deploy a local Kubernetes cluster inside Docker.
 
 ## Setup
 ```bash
