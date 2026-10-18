@@ -26,21 +26,6 @@ The following table summarizes the technologies used for each component of this 
 | Containerization | Docker |
 | Container Orchestration | Kubernetes (k3d) |
 
-Here is a visualization of the system's architecture:
-```
-Browser
-   ↓
-Ingress
-   ↓
-Frontend (React)
-   ↓
-Backend (FastAPI)
-   ↓
-Redis Queue → Worker
-   ↓
-PostgreSQL
-```
-
 ### Machine Learning Model
 While this project is a solo personal project, this work builds on a previous project I worked on with 2 colleagues for university. The previous project focused on engineering the model used in this project, and more information about the model can be found at the [pl-predictor-model repository](https://github.com/luke-venk/pl-predictor-model). Our model was a voting ensemble model combining logistic regression, random forest, and XGBoost, and had a peak testing accuracy of 59% for the ternary classification (home win, draw, or away win), on par with the state-of-the-art models found in literature.
 
